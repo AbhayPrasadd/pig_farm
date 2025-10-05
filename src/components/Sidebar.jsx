@@ -4,6 +4,7 @@ import {
   Home,
   ClipboardCheck,
   FileText,
+  NotebookPen,
   Bot,
   AlertTriangle,
   CloudSun,
@@ -23,7 +24,8 @@ const Sidebar = ({ setIsSidebarOpen }) => {
     () => [
       { name: "Dashboard", path: "/dashboard", icon: <Home size={20} /> },
       { name: "Risk Assessment", path: "/dashboard/riskAssessment", icon: <ClipboardCheck size={20} /> },
-      { name: "Compliance Log", path: "/dashboard/complianceLog", icon: <FileText size={20} /> },
+      { name: "Compliance Dashboard", path: "/dashboard/complianceLog", icon: <FileText size={20} /> },
+      { name: "Compliance Logbook", path: "/dashboard/complianceLogbook", icon: <NotebookPen size={20} /> }, // ✅ New Route
       { name: "AI Advisor", path: "/dashboard/aiAdvisor", icon: <Bot size={20} /> },
       { name: "Outbreak Alerts", path: "/dashboard/alerts", icon: <AlertTriangle size={20} /> },
       { name: "Weather & Risk", path: "/dashboard/weather", icon: <CloudSun size={20} /> },
@@ -42,7 +44,7 @@ const Sidebar = ({ setIsSidebarOpen }) => {
           <img
             src="/farmshield-logo.png"
             alt="FarmShield"
-            className="h-[80px] w-auto"
+            className="h-[70px] w-auto"
           />
           <button
             onClick={() => setIsSidebarOpen(false)}
@@ -58,7 +60,7 @@ const Sidebar = ({ setIsSidebarOpen }) => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm md:text-base font-medium transition-all ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm md:text-base font-medium transition-all ${
                 location.pathname === item.path
                   ? "bg-green-700 text-white shadow-sm"
                   : "hover:bg-green-800 text-white/90"

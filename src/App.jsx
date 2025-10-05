@@ -4,15 +4,18 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
-// 🌾 New Farmer Pages (Biosecurity-focused)
-import Dashboard from "./pages/farmer/Dashboard"; // updated dashboard (you already have)
-import RiskAssessment from "./pages/farmer/RiskAssessment"; // 🆕 new page
-import ComplianceLog from "./pages/farmer/ComplianceLog"; // 🆕 new page
-import AIAdvisor from "./pages/farmer/AIAdvisor"; // 🆕 new page
-import Alerts from "./pages/farmer/Alerts"; // 🆕 new page
-import Weather from "./pages/farmer/Weather"; // can reuse existing
+// 🌾 Farmer Pages
+import Dashboard from "./pages/farmer/Dashboard";
+import RiskAssessment from "./pages/farmer/RiskAssessment";
+import ComplianceLog from "./pages/farmer/ComplianceLog";
+import ComplianceLogbook from "./pages/farmer/ComplianceLogbook";
+import AIAdvisor from "./pages/farmer/AIAdvisor";
+import Alerts from "./pages/farmer/Alerts";
+import Weather from "./pages/farmer/Weather";
+import Training from "./pages/farmer/Training";
+import FarmerProfile from "./pages/farmer/FarmerProfile"; // ✅ NEW PAGE IMPORT
 
-// 🧑‍💼 Officer Pages (KEEP OLD)
+// 🧑‍💼 Officer Pages
 import OfficerDashboard from "./pages/officer/OfficerDashboard";
 import AdvisoryManagement from "./pages/officer/AdvisoryManagement";
 import AlertsOfficer from "./pages/officer/Alerts";
@@ -22,7 +25,7 @@ import KnowledgeBase from "./pages/officer/KnowledgeBase";
 import ReportAnalytics from "./pages/officer/ReportAnalytics";
 import OfficerProfile from "./pages/officer/OfficerProfile";
 
-// 🏛️ Admin Pages (KEEP OLD)
+// 🏛️ Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProfile from "./pages/admin/AdminProfile";
 import FarmerManagement from "./pages/admin/UserManagement";
@@ -30,7 +33,7 @@ import OfficerManagement from "./pages/admin/UserManagement";
 import Settings from "./pages/admin/Settings";
 import UserManagement from "./pages/admin/UserManagement";
 
-// 🌍 Public Pages (same)
+// 🌍 Public Pages
 import LandingPage from "./pages/Landing";
 import AuthPage from "./pages/AuthPage";
 import Registration from "./pages/Registration";
@@ -75,7 +78,6 @@ const App = () => {
         element={
           user && role ? (
             <Layout role={role}>
-              {/* render dashboard based on role */}
               {role === "farmer" && <Dashboard />}
               {role === "officer" && <OfficerDashboard />}
               {role === "admin" && <AdminDashboard />}
@@ -85,20 +87,22 @@ const App = () => {
           )
         }
       >
-
-        {/* 🌾 Farmer Routes (Biosecurity Updated) */}
+        {/* 🌾 Farmer Routes */}
         {role === "farmer" && (
           <>
             <Route index element={<Dashboard />} />
             <Route path="riskAssessment" element={<RiskAssessment />} />
             <Route path="complianceLog" element={<ComplianceLog />} />
+            <Route path="complianceLogbook" element={<ComplianceLogbook />} />
             <Route path="aiAdvisor" element={<AIAdvisor />} />
             <Route path="alerts" element={<Alerts />} />
             <Route path="weather" element={<Weather />} />
+            <Route path="training" element={<Training />} />
+            <Route path="profilePage" element={<FarmerProfile />} /> {/* ✅ NEW ROUTE */}
           </>
         )}
 
-        {/* 🧑‍💼 Officer Routes (Unchanged) */}
+        {/* 🧑‍💼 Officer Routes */}
         {role === "officer" && (
           <>
             <Route index element={<OfficerDashboard />} />
@@ -112,7 +116,7 @@ const App = () => {
           </>
         )}
 
-        {/* 🏛️ Admin Routes (Unchanged) */}
+        {/* 🏛️ Admin Routes */}
         {role === "admin" && (
           <>
             <Route index element={<AdminDashboard />} />
