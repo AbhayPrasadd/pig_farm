@@ -7,6 +7,8 @@ import {
   Bot,
   AlertTriangle,
   CloudSun,
+  GraduationCap,
+  Wallet,
   User,
   X,
 } from "lucide-react";
@@ -16,7 +18,7 @@ const Sidebar = ({ setIsSidebarOpen }) => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // 🌾 Farmer Menu Items Only
+  // 🌾 Farmer Menu Items
   const menuItems = useMemo(
     () => [
       { name: "Dashboard", path: "/dashboard", icon: <Home size={20} /> },
@@ -25,6 +27,8 @@ const Sidebar = ({ setIsSidebarOpen }) => {
       { name: "AI Advisor", path: "/dashboard/aiAdvisor", icon: <Bot size={20} /> },
       { name: "Outbreak Alerts", path: "/dashboard/alerts", icon: <AlertTriangle size={20} /> },
       { name: "Weather & Risk", path: "/dashboard/weather", icon: <CloudSun size={20} /> },
+      { name: "Training & Learning", path: "/dashboard/training", icon: <GraduationCap size={20} /> },
+      { name: "Expense Tracker", path: "/dashboard/expenseTracker", icon: <Wallet size={20} /> },
       { name: "Profile", path: "/dashboard/profilePage", icon: <User size={20} /> },
     ],
     [t]
@@ -32,11 +36,18 @@ const Sidebar = ({ setIsSidebarOpen }) => {
 
   return (
     <div className="bg-green-900 text-white h-full w-64 p-4 pt-20 md:pt-24 flex flex-col justify-between">
-      {/* 🔝 Top Section: Logo + Close Button (for mobile) */}
+      {/* 🔝 Logo + Close (Mobile) */}
       <div>
         <div className="md:hidden flex items-center justify-between px-4 absolute top-2 left-0 right-0">
-          <img src="/farmshield-logo.png" alt="FarmShield" className="h-[80px] w-auto" />
-          <button onClick={() => setIsSidebarOpen(false)} className="text-white ml-4">
+          <img
+            src="/farmshield-logo.png"
+            alt="FarmShield"
+            className="h-[80px] w-auto"
+          />
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="text-white ml-4"
+          >
             <X size={24} />
           </button>
         </div>
@@ -49,7 +60,7 @@ const Sidebar = ({ setIsSidebarOpen }) => {
               to={item.path}
               className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm md:text-base font-medium transition-all ${
                 location.pathname === item.path
-                  ? "bg-green-700 text-white"
+                  ? "bg-green-700 text-white shadow-sm"
                   : "hover:bg-green-800 text-white/90"
               }`}
               onClick={() => setIsSidebarOpen(false)}
