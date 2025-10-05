@@ -3,13 +3,14 @@ import { Link } from "react-router-dom";
 import { auth, db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import {
-  CloudSun,
-  BarChart3,
-  Leaf,
+  Shield,
+  ClipboardCheck,
   FileText,
   AlertTriangle,
-  SatelliteDish,
+  BarChart3,
   Bot,
+  CloudSun,
+  Activity,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
@@ -32,7 +33,7 @@ const Dashboard = () => {
           setUserData(userSnap.data());
         }
       }
-      fetchWeatherData("Bhubaneswar"); 
+      fetchWeatherData("Bhubaneswar");
       setLoading(false);
     };
 
@@ -52,28 +53,43 @@ const Dashboard = () => {
     fetchUserData();
   }, []);
 
-  const generateSuggestions = () => {
-    if (!weatherData) return null;
-
-    const crops = userData?.primaryCrops
-      ? Object.values(userData.primaryCrops).flat()
-      : ["Rice", "Wheat"]; // Demo fallback crops
+  // 🧠 AI-based suggestion generator for farm biosecurity
+  const generateBiosecuritySuggestions = () => {
+    if (!weatherData) return [];
 
     const temp = weatherData.current.temp_c;
     const condition = weatherData.current.condition.text.toLowerCase();
+    const farmType = userData?.farmType || "Pig Farm";
     let suggestions = [];
 
-    crops.forEach((crop) => {
-      if (temp > 30 && condition.includes("sun")) {
-        suggestions.push(`${crop}: Irrigate regularly due to high temperature.`);
-      } else if (condition.includes("rain")) {
-        suggestions.push(`${crop}: Watch for water logging & diseases.`);
-      } else if (temp < 15) {
-        suggestions.push(`${crop}: Protect from frost with mulching.`);
-      } else {
-        suggestions.push(`${crop}: Weather is moderate. Monitor growth.`);
+    // Dynamic suggestions logic based on weather and farm type
+    if (farmType.toLowerCase().includes("pig")) {
+      if (condition.includes("rain") || temp > 32) {
+        suggestions.push(
+          "High humidity detected — ensure pig pens remain dry to prevent ASF and bacterial growth."
+        );
       }
-    });
+      if (condition.includes("storm") || condition.includes("wind")) {
+        suggestions.push("Secure feed storage and close open shed sections.");
+      }
+      if (temp < 20) {
+        suggestions.push("Low temperature — provide bedding or heat lamps for piglets.");
+      }
+    } else if (farmType.toLowerCase().includes("poultry")) {
+      if (condition.includes("rain") || temp > 30) {
+        suggestions.push("Cover feed and water to prevent contamination.");
+      }
+      if (condition.includes("fog") || temp < 18) {
+        suggestions.push("Increase ventilation to prevent respiratory issues.");
+      }
+    }
+
+    // Generic fallback
+    if (suggestions.length === 0) {
+      suggestions.push(
+        "Maintain routine disinfection and limit visitor entry to reduce infection risk."
+      );
+    }
 
     return suggestions.slice(0, 2);
   };
@@ -95,13 +111,15 @@ const Dashboard = () => {
   return (
     <div className="px-4 py-6 sm:px-8 bg-gradient-to-br min-h-screen font-poppins text-gray-800">
       <div className="max-w-8xl mx-auto">
+        {/* Header Section */}
         <div className="flex justify-between items-center mb-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-green-800">
-              {t("welcome")}, {userData?.fullName || t("farmer")} 👋
+              Welcome, {userData?.fullName || "Farmer"} 👋
             </h1>
             <p className="text-base text-gray-700">
-              {userData?.district || "Bhubaneswar"}, {userData?.state || "Odisha"}
+              {userData?.district || "Bhubaneswar"},{" "}
+              {userData?.state || "Odisha"}
             </p>
           </div>
           <div>
@@ -116,7 +134,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Weather Section */}
+        {/* Weather + Suggestions Section */}
         <div className="bg-white p-4 rounded-md shadow-sm border mb-8 relative">
           {weatherData ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -140,13 +158,10 @@ const Dashboard = () => {
               </div>
               <div>
                 <h3 className="text-md font-semibold text-green-700 mb-2">
-                  {t("Suggestions")}
+                  Real-time Biosecurity Suggestions
                 </h3>
-                {generateSuggestions()?.map((suggestion, index) => (
-                  <p
-                    key={index}
-                    className="text-sm text-gray-700"
-                  >
+                {generateBiosecuritySuggestions()?.map((suggestion, index) => (
+                  <p key={index} className="text-sm text-gray-700">
                     • {suggestion}
                   </p>
                 ))}
@@ -155,58 +170,58 @@ const Dashboard = () => {
           ) : (
             <p className="text-sm text-gray-500">{t("loading_weather")}</p>
           )}
-          <Link
-            to="/dashboard/weather"
-            className="absolute top-5 right-5 text-green-700 hover:underline flex items-center gap-1 font-medium text-sm"
-          >
-            →
-          </Link>
         </div>
 
-        {/* Cards Section */}
+        {/* Main Dashboard Modules */}
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
           <Card
-            to="/dashboard/voiceBot"
-            icon={<Bot className="text-green-500" />}
-            title={t("voicebot_title")}
-            subtitle={t("voicebot_subtitle")}
+            to="/dashboard/riskAssessment"
+            icon={<ClipboardCheck className="text-green-600" />}
+            title="Risk Assessment"
+            subtitle="Evaluate your farm’s biosecurity level"
           />
           <Card
-            to="/dashboard/Ndvi"
-            icon={<SatelliteDish className="text-blue-500" />}
-            title={t("ndvi_title")}
-            subtitle={t("ndvi_subtitle")}
-          />
-          <Card
-            to="/dashboard/mandiPage"
-            icon={<BarChart3 className="text-yellow-500" />}
-            title={t("market_title")}
-            subtitle={t("market_subtitle")}
-          />
-          <Card
-            to="/dashboard/cropGuide"
-            icon={<Leaf className="text-green-700" />}
-            title={t("cropguide_title")}
-            subtitle={t("cropguide_subtitle")}
-          />
-          <Card
-            to="/dashboard/farmingAlerts"
-            icon={<AlertTriangle className="text-red-500" />}
-            title={t("alerts_title")}
-            subtitle={t("alerts_subtitle")}
-          />
-          <Card
-            to="/dashboard/schemes"
+            to="/dashboard/complianceLog"
             icon={<FileText className="text-indigo-600" />}
-            title={t("schemes_title")}
-            subtitle={t("schemes_subtitle")}
+            title="Compliance Logbook"
+            subtitle="Record disinfection & cleaning actions"
           />
+          <Card
+            to="/dashboard/aiAdvisor"
+            icon={<Bot className="text-green-500" />}
+            title="AI Biosecurity Assistant"
+            subtitle="Ask questions in your language"
+          />
+          <Card
+            to="/dashboard/alerts"
+            icon={<AlertTriangle className="text-red-500" />}
+            title="Outbreak Alerts"
+            subtitle="Check nearby disease risks"
+          />
+          <Card
+            to="/dashboard/vetReports"
+            icon={<BarChart3 className="text-yellow-500" />}
+            title="Vet Dashboard"
+            subtitle="View inspections & reports"
+          />
+          <Card
+            to="/dashboard/weather"
+            icon={<CloudSun className="text-blue-500" />}
+            title="Weather & Risk Updates"
+            subtitle="Track weather-sensitive risks"
+          />
+        </div>
+
+        {/* Footer Section */}
+        <div className="mt-8 text-center text-xs text-gray-500">
+          🐷 Powered by FarmShield | Digital Biosecurity System © 2025
         </div>
       </div>
     </div>
   );
 };
 
+// 🔹 Reusable Card Component
 const Card = ({ to, icon, title, subtitle }) => {
   return (
     <Link
