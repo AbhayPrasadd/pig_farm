@@ -1,4 +1,4 @@
-import { Home, Leaf, PlusCircle, User, MessageSquare } from "lucide-react";
+import { Home, ClipboardCheck, Bot, AlertTriangle, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const BottomTabBar = ({ isSidebarOpen }) => {
@@ -11,45 +11,72 @@ const BottomTabBar = ({ isSidebarOpen }) => {
       }`}
     >
       <div className="flex justify-between items-center px-4 py-2">
+        {/* 🏠 Home */}
         <Link to="/dashboard">
           <div className="flex flex-col items-center gap-1">
-            <Home size={22} className={location.pathname === "/dashboard" ? "text-yellow-300" : "text-white"} />
+            <Home
+              size={22}
+              className={location.pathname === "/dashboard" ? "text-yellow-300" : "text-white"}
+            />
             <span className="text-xs">Home</span>
           </div>
         </Link>
 
-        <Link to="/dashboard/farmingAlerts">
+        {/* 📋 Risk Assessment */}
+        <Link to="/dashboard/riskAssessment">
           <div className="flex flex-col items-center gap-1">
-            <MessageSquare
+            <ClipboardCheck
               size={22}
-              className={location.pathname === "/dashboard/farmingAlerts" ? "text-yellow-300" : "text-white"}
+              className={
+                location.pathname === "/dashboard/riskAssessment"
+                  ? "text-yellow-300"
+                  : "text-white"
+              }
+            />
+            <span className="text-xs">Assess</span>
+          </div>
+        </Link>
+
+        {/* 🤖 AI Advisor */}
+        <Link to="/dashboard/aiAdvisor">
+          <div className="flex flex-col items-center gap-1 scale-125">
+            <Bot
+              size={26}
+              className={
+                location.pathname === "/dashboard/aiAdvisor"
+                  ? "text-yellow-300"
+                  : "text-yellow-300"
+              }
+            />
+            <span className="text-xs">AI Help</span>
+          </div>
+        </Link>
+
+        {/* ⚠️ Alerts */}
+        <Link to="/dashboard/alerts">
+          <div className="flex flex-col items-center gap-1">
+            <AlertTriangle
+              size={22}
+              className={
+                location.pathname === "/dashboard/alerts"
+                  ? "text-yellow-300"
+                  : "text-white"
+              }
             />
             <span className="text-xs">Alerts</span>
           </div>
         </Link>
 
-        <Link to="/dashboard/advisoryPage">
-          <div className="flex flex-col items-center gap-1 scale-125">
-            <PlusCircle size={26} className="text-yellow-300" />
-            <span className="text-xs">Advisory</span>
-          </div>
-        </Link>
-
-        <Link to="/dashboard/communityPage">
-          <div className="flex flex-col items-center gap-1">
-            <Leaf
-              size={22}
-              className={location.pathname === "/dashboard/communityPage" ? "text-yellow-300" : "text-white"}
-            />
-            <span className="text-xs">Community</span>
-          </div>
-        </Link>
-
+        {/* 👤 Profile */}
         <Link to="/dashboard/profilePage">
           <div className="flex flex-col items-center gap-1">
             <User
               size={22}
-              className={location.pathname === "/dashboard/profile" ? "text-yellow-300" : "text-white"}
+              className={
+                location.pathname === "/dashboard/profilePage"
+                  ? "text-yellow-300"
+                  : "text-white"
+              }
             />
             <span className="text-xs">Profile</span>
           </div>
