@@ -24,11 +24,9 @@ const Sidebar = ({ setIsSidebarOpen }) => {
     () => [
       { name: "Dashboard", path: "/dashboard", icon: <Home size={20} /> },
       { name: "Risk Assessment", path: "/dashboard/riskAssessment", icon: <ClipboardCheck size={20} /> },
-      { name: "Compliance Dashboard", path: "/dashboard/complianceLog", icon: <FileText size={20} /> },
-      { name: "Compliance Logbook", path: "/dashboard/complianceLogbook", icon: <NotebookPen size={20} /> }, // ✅ New Route
+      { name: "Logbooks", path: "/dashboard/complianceLogbook", icon: <NotebookPen size={20} /> }, 
+      { name: "Compliance", path: "/dashboard/complianceLog", icon: <FileText size={20} /> }, 
       { name: "AI Advisor", path: "/dashboard/aiAdvisor", icon: <Bot size={20} /> },
-      { name: "Outbreak Alerts", path: "/dashboard/alerts", icon: <AlertTriangle size={20} /> },
-      { name: "Weather & Risk", path: "/dashboard/weather", icon: <CloudSun size={20} /> },
       { name: "Training & Learning", path: "/dashboard/training", icon: <GraduationCap size={20} /> },
       { name: "Expense Tracker", path: "/dashboard/expenseTracker", icon: <Wallet size={20} /> },
       { name: "Profile", path: "/dashboard/profilePage", icon: <User size={20} /> },
