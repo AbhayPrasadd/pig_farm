@@ -5,7 +5,6 @@ import {
   MapPin,
   User,
   Loader2,
-  BarChart3,
   CheckCircle,
   XCircle,
 } from "lucide-react";
@@ -27,25 +26,25 @@ export default function RiskAssessment() {
 
   const QUESTION_SETS = {
     rainy: [
-      { key: "drainage", text: "Are drainage channels clear after rainfall?", suggestion: "Improve drainage systems to prevent waterlogging in pens." },
-      { key: "feed_protected", text: "Is feed protected from moisture or contamination?", suggestion: "Store feed in dry, covered areas to avoid bacterial growth." },
-      { key: "visitor_control", text: "Are visitors restricted during wet conditions?", suggestion: "Restrict visitor entry during wet weather to avoid disease spread." },
-      { key: "water_clean", text: "Are water troughs cleaned in the last 24 hours?", suggestion: "Clean and disinfect water troughs regularly to maintain hygiene." },
-      { key: "footbaths", text: "Are disinfectant footbaths available at all entry points?", suggestion: "Place disinfectant footbaths at entry points and refresh daily." },
+      { key: "drainage", text: "Are drainage channels clear after rainfall?", suggestion: "Improve drainage systems to prevent waterlogging." },
+      { key: "feed_protected", text: "Is feed protected from moisture or contamination?", suggestion: "Store feed in dry, covered areas." },
+      { key: "visitor_control", text: "Are visitors restricted during wet conditions?", suggestion: "Restrict visitor entry during wet weather." },
+      { key: "water_clean", text: "Are water troughs cleaned in the last 24 hours?", suggestion: "Clean and disinfect water troughs regularly." },
+      { key: "footbaths", text: "Are disinfectant footbaths available at all entry points?", suggestion: "Place footbaths and refresh daily." },
     ],
     cold: [
-      { key: "piglet_heat", text: "Are piglets provided with heating or warm bedding?", suggestion: "Provide bedding or heaters for piglets in cold conditions." },
-      { key: "insulation", text: "Are sheds insulated to prevent cold drafts?", suggestion: "Seal gaps and insulate sheds to retain warmth." },
-      { key: "ventilation", text: "Is ventilation adjusted to avoid damp air?", suggestion: "Balance ventilation to remove moisture while maintaining warmth." },
-      { key: "water_temp", text: "Is drinking water kept at a moderate temperature?", suggestion: "Avoid very cold water for animals to prevent stress." },
-      { key: "record_temp", text: "Is shed temperature recorded daily?", suggestion: "Record shed temperature daily for better climate control." },
+      { key: "piglet_heat", text: "Are piglets provided with heating or warm bedding?", suggestion: "Provide bedding or heaters for piglets." },
+      { key: "insulation", text: "Are sheds insulated to prevent cold drafts?", suggestion: "Seal gaps and insulate sheds." },
+      { key: "ventilation", text: "Is ventilation adjusted to avoid damp air?", suggestion: "Balance ventilation to remove moisture." },
+      { key: "water_temp", text: "Is drinking water kept at a moderate temperature?", suggestion: "Avoid very cold water for animals." },
+      { key: "record_temp", text: "Is shed temperature recorded daily?", suggestion: "Record shed temperature for better control." },
     ],
     normal: [
-      { key: "disinfection", text: "Are cleaning and disinfection logs updated daily?", suggestion: "Keep disinfection logs up-to-date to ensure consistency." },
-      { key: "ppe", text: "Is staff wearing protective equipment (PPE)?", suggestion: "Ensure all workers use PPE before entering animal zones." },
-      { key: "boundary", text: "Is the farm boundary secured to prevent wild entry?", suggestion: "Install fencing or secure boundaries to avoid external contamination." },
-      { key: "vehicle", text: "Are vehicles disinfected before entry?", suggestion: "Disinfect all incoming vehicles to prevent external pathogen entry." },
-      { key: "training", text: "Are staff trained in daily biosecurity practices?", suggestion: "Provide regular refresher training to improve biosecurity habits." },
+      { key: "disinfection", text: "Are cleaning logs updated daily?", suggestion: "Keep disinfection logs up to date." },
+      { key: "ppe", text: "Is staff wearing protective equipment (PPE)?", suggestion: "Ensure all workers use PPE." },
+      { key: "boundary", text: "Is the farm boundary secured?", suggestion: "Install fencing to avoid contamination." },
+      { key: "vehicle", text: "Are vehicles disinfected before entry?", suggestion: "Disinfect all incoming vehicles." },
+      { key: "training", text: "Are staff trained in daily biosecurity?", suggestion: "Provide refresher training regularly." },
     ],
   };
 
@@ -60,12 +59,7 @@ export default function RiskAssessment() {
           if (snap.exists()) udata = snap.data();
         }
         if (!udata) {
-          udata = {
-            fullName: "Ramesh Kumar",
-            farmType: "Pig Farm",
-            district: "Bhubaneswar",
-            state: "Odisha",
-          };
+          udata = { fullName: "Ramesh Kumar", farmType: "Pig Farm", district: "Bhubaneswar", state: "Odisha" };
         }
         if (!mounted) return;
         setUserData(udata);
@@ -95,7 +89,7 @@ export default function RiskAssessment() {
         setTimeout(() => {
           setQuestions(QUESTION_SETS[context]);
           setStage("ready");
-        }, 2500);
+        }, 1000); // ✅ reduced from 2500 to 1000ms
       } catch {
         setStage("ready");
         setQuestions(QUESTION_SETS.normal);
@@ -107,7 +101,7 @@ export default function RiskAssessment() {
 
   const setAnswer = (key, val) => setAnswers((p) => ({ ...p, [key]: val }));
 
-  function submitAssessment() {
+  const submitAssessment = () => {
     const total = questions.length || 1;
     const yesCount = questions.filter((q) => answers[q.key] === "yes").length;
     const pct = Math.round((yesCount / total) * 100);
@@ -117,16 +111,11 @@ export default function RiskAssessment() {
     else if (pct > 50) setAdvice("⚠️ Moderate — Some practices can be improved.");
     else setAdvice("🚨 High Risk — Immediate improvements are needed.");
 
-    const atRisk = questions
-      .filter((q) => answers[q.key] === "no")
-      .map((q) => q.suggestion);
-    const performing = questions
-      .filter((q) => answers[q.key] === "yes")
-      .map((q) => `Good work on: ${q.text.toLowerCase()}`);
-
+    const atRisk = questions.filter((q) => answers[q.key] === "no").map((q) => q.suggestion);
+    const performing = questions.filter((q) => answers[q.key] === "yes").map((q) => `Good work on: ${q.text.toLowerCase()}`);
     setInsights({ atRisk, performing });
     setStage("results");
-  }
+  };
 
   const resetAssessment = () => {
     setAnswers({});
@@ -140,33 +129,33 @@ export default function RiskAssessment() {
   const condText = weather?.current?.condition?.text || "Unknown";
 
   return (
-    <div className="p-6 md:p-10 font-poppins bg-gray-50 min-h-screen text-gray-800">
+    <div className="p-4 sm:p-6 md:p-10 font-poppinsmin-h-screen text-gray-800">
       {/* HEADER */}
-      <div className="flex items-center gap-4 mb-6">
-        <Brain className="text-green-700" size={36} />
+      <div className="flex items-center gap-3 mb-6">
+        <Brain className="text-green-700" size={32} />
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Smart Biosecurity Self-Assessment
           </h1>
-          <p className="text-base text-gray-600 mt-1">
-            Custom checklist generated from your farm profile & Realtime data.
+          <p className="text-sm sm:text-base text-gray-600 mt-1">
+            Custom checklist from your farm profile & realtime data.
           </p>
         </div>
       </div>
 
       {/* FARM INFO */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow p-5 mb-6 text-lg">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-gray-700">
+      <div className="bg-white border border-gray-200 rounded-xl shadow p-4 sm:p-5 mb-6 text-sm sm:text-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-gray-700">
           <div className="flex items-center gap-2">
-            <User className="text-green-600" size={20} />
+            <User className="text-green-600" size={18} />
             <span><b>Farmer:</b> {userData?.fullName}</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="text-green-600" size={20} />
+            <MapPin className="text-green-600" size={18} />
             <span><b>Location:</b> {userData?.district}, {userData?.state}</span>
           </div>
           <div className="flex items-center gap-2">
-            <CloudSun className="text-green-600" size={20} />
+            <CloudSun className="text-green-600" size={18} />
             <span><b>Weather:</b> {condText} ({weather?.current?.temp_c}°C)</span>
           </div>
           <div><b>Date:</b> {formatDate(new Date())}</div>
@@ -176,54 +165,51 @@ export default function RiskAssessment() {
       {/* STAGES */}
       {stage === "analyzing" && (
         <div className="text-center bg-white p-6 rounded-xl border shadow-sm">
-          <Loader2 className="animate-spin mx-auto text-green-600" size={40} />
+          <Loader2 className="animate-spin mx-auto text-green-600" size={36} />
           <p className="mt-3 text-gray-800 text-lg font-semibold">
-            Analyzing weather & farm data…
-          </p>
-          <p className="text-gray-600 mt-2 text-base">
-            Generating your dynamic checklist, please wait.
+            Analyzing farm data…
           </p>
         </div>
       )}
 
       {stage === "ready" && (
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow space-y-5">
-          <h2 className="text-2xl font-semibold text-gray-900">
+        <div className="bg-white p-5 sm:p-6 rounded-xl border border-gray-200 shadow space-y-5">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
             AI-Generated Checklist
           </h2>
-          <p className="text-gray-700 text-base">
-            Please answer all questions below to assess your biosecurity level.
+          <p className="text-gray-700 text-sm sm:text-base">
+            Answer all questions to assess your farm biosecurity.
           </p>
 
-          <div className="grid gap-4">
+          <div className="grid gap-3 sm:gap-4">
             {questions.map((q, i) => (
               <div
                 key={q.key}
-                className="border border-gray-100 shadow-sm rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 hover:bg-gray-50 transition"
+                className="border border-gray-100 shadow-sm rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 hover:bg-gray-50 transition"
               >
-                <span className="text-lg text-gray-800 font-medium">
+                <span className="text-sm sm:text-lg font-medium text-gray-800">
                   {i + 1}. {q.text}
                 </span>
-                <div className="flex gap-3">
+                <div className="flex gap-2 w-full sm:w-auto justify-end">
                   <button
                     onClick={() => setAnswer(q.key, "yes")}
-                    className={`px-4 py-2 rounded-lg text-base font-medium border transition ${
+                    className={`flex-1 sm:flex-none px-3 py-2 rounded-lg text-sm font-medium border transition ${
                       answers[q.key] === "yes"
                         ? "bg-green-600 text-white border-green-600"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-green-50"
                     }`}
                   >
-                    <CheckCircle size={18} className="inline mr-1" /> Yes
+                    <CheckCircle size={16} className="inline mr-1" /> Yes
                   </button>
                   <button
                     onClick={() => setAnswer(q.key, "no")}
-                    className={`px-4 py-2 rounded-lg text-base font-medium border transition ${
+                    className={`flex-1 sm:flex-none px-3 py-2 rounded-lg text-sm font-medium border transition ${
                       answers[q.key] === "no"
                         ? "bg-red-600 text-white border-red-600"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-red-50"
                     }`}
                   >
-                    <XCircle size={18} className="inline mr-1" /> No
+                    <XCircle size={16} className="inline mr-1" /> No
                   </button>
                 </div>
               </div>
@@ -232,7 +218,7 @@ export default function RiskAssessment() {
 
           <button
             onClick={submitAssessment}
-            className="mt-4 bg-green-700 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-green-800 transition"
+            className="w-full sm:w-auto mt-4 bg-green-700 text-white px-6 py-3 rounded-lg text-base font-semibold hover:bg-green-800 transition"
           >
             Generate Risk Summary
           </button>
@@ -241,9 +227,11 @@ export default function RiskAssessment() {
 
       {stage === "results" && (
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl border shadow">
-            <h2 className="text-2xl font-semibold mb-3 text-gray-900">Risk Summary</h2>
-            <p className="text-gray-700 text-lg font-medium mb-2">
+          <div className="bg-white p-5 sm:p-6 rounded-xl border shadow">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-3 text-gray-900">
+              Risk Summary
+            </h2>
+            <p className="text-gray-700 text-base sm:text-lg font-medium mb-2">
               Biosecurity Score:{" "}
               <span
                 className={`font-bold ${
@@ -263,46 +251,54 @@ export default function RiskAssessment() {
               ></div>
             </div>
 
-            <p className="text-base text-gray-800 font-medium">{advice}</p>
+            <p className="text-sm sm:text-base font-medium">{advice}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white p-5 rounded-xl border shadow">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">🚨 Suggested Improvements</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3">
+                🚨 Suggested Improvements
+              </h3>
               {insights.atRisk.length ? (
-                <ul className="list-disc list-inside text-base text-gray-700 space-y-1">
+                <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
                   {insights.atRisk.map((t, i) => (
                     <li key={i}>{t}</li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-base text-gray-600">No improvement areas detected.</p>
+                <p className="text-sm sm:text-base text-gray-600">
+                  No improvement areas detected.
+                </p>
               )}
             </div>
             <div className="bg-white p-5 rounded-xl border shadow">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">✅ Good Practices Maintained</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3">
+                ✅ Good Practices Maintained
+              </h3>
               {insights.performing.length ? (
-                <ul className="list-disc list-inside text-base text-gray-700 space-y-1">
+                <ul className="list-disc list-inside text-sm sm:text-base text-gray-700 space-y-1">
                   {insights.performing.map((t, i) => (
                     <li key={i}>{t}</li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-base text-gray-600">No positive checks yet.</p>
+                <p className="text-sm sm:text-base text-gray-600">
+                  No positive checks yet.
+                </p>
               )}
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => window.print()}
-              className="bg-white border border-gray-300 px-5 py-2 rounded-lg text-gray-800 hover:bg-gray-100 text-base font-medium"
+              className="w-full sm:w-auto bg-white border border-gray-300 px-5 py-2 rounded-lg text-gray-800 hover:bg-gray-100 text-sm sm:text-base font-medium"
             >
               📥 Download Report
             </button>
             <button
               onClick={resetAssessment}
-              className="bg-green-700 text-white px-6 py-2 rounded-lg text-base font-semibold hover:bg-green-800"
+              className="w-full sm:w-auto bg-green-700 text-white px-6 py-2 rounded-lg text-sm sm:text-base font-semibold hover:bg-green-800"
             >
               Reassess
             </button>

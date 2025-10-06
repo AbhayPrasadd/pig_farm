@@ -34,15 +34,15 @@ const ComplianceLog = () => {
         ],
       });
       setLoading(false);
-    }, 1500);
+    }, 1000); // ⚡ Faster load time
   }, []);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[80vh]">
+      <div className="flex justify-center items-center h-[70vh]">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-green-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 font-medium text-lg">
+          <Loader2 className="w-10 h-10 text-green-600 animate-spin mx-auto mb-3" />
+          <p className="text-gray-600 font-medium text-base sm:text-lg">
             Loading Compliance Overview...
           </p>
         </div>
@@ -56,30 +56,30 @@ const ComplianceLog = () => {
   );
 
   return (
-    <div className="p-6 md:p-10 font-poppins bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 md:p-10 font-poppins bg-gray-50 min-h-screen text-gray-800">
       {/* Header */}
       <div className="max-w-6xl mx-auto mb-6">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
               Compliance Dashboard
             </h1>
-            <p className="text-base text-gray-600 mt-1">
+            <p className="text-sm sm:text-base text-gray-600 mt-1">
               Monitor and manage your farm’s biosecurity compliance effortlessly.
             </p>
           </div>
-          <div className="h-1 w-32 bg-green-600 rounded-full mt-3 sm:mt-0"></div>
+          <div className="h-1 w-24 sm:w-32 bg-green-600 rounded-full mt-3 sm:mt-0"></div>
         </div>
       </div>
 
       {/* Main Grid */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Farm Info */}
-        <div className="bg-white border border-green-300 rounded-xl shadow-md hover:shadow-lg transition p-6">
-          <h2 className="text-xl font-semibold text-green-700 mb-3 flex items-center gap-2">
-            <ClipboardList size={22} /> Farm Summary
+        <div className="bg-white border border-green-300 rounded-xl shadow-md hover:shadow-lg transition p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-green-700 mb-3 flex items-center gap-2">
+            <ClipboardList size={20} /> Farm Summary
           </h2>
-          <div className="text-base text-gray-700 space-y-2">
+          <div className="text-sm sm:text-base text-gray-700 space-y-2">
             <p>
               <strong>Farmer:</strong> {data.farmerName}
             </p>
@@ -99,17 +99,17 @@ const ComplianceLog = () => {
         </div>
 
         {/* Compliance Score */}
-        <div className="bg-white border border-green-300 rounded-xl shadow-md hover:shadow-lg transition p-6 col-span-2">
-          <h2 className="text-xl font-semibold text-green-700 mb-3 flex items-center gap-2">
-            <BarChart3 size={22} /> Compliance Overview
+        <div className="bg-white border border-green-300 rounded-xl shadow-md hover:shadow-lg transition p-4 sm:p-6 col-span-1 lg:col-span-2">
+          <h2 className="text-lg sm:text-xl font-semibold text-green-700 mb-3 flex items-center gap-2">
+            <BarChart3 size={20} /> Compliance Overview
           </h2>
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
             <div>
-              <p className="text-5xl font-bold text-green-700">
+              <p className="text-4xl sm:text-5xl font-bold text-green-700">
                 {data.complianceScore}%
               </p>
-              <p className="text-sm text-gray-600 font-medium mt-1">
+              <p className="text-xs sm:text-sm text-gray-600 font-medium mt-1">
                 Overall Compliance Score
               </p>
             </div>
@@ -121,7 +121,7 @@ const ComplianceLog = () => {
                   style={{ width: `${completionPercent}%` }}
                 ></div>
               </div>
-              <p className="text-sm text-gray-600 mt-2 text-right">
+              <p className="text-xs sm:text-sm text-gray-600 mt-2 text-right">
                 {data.completedTasks}/{data.totalTasks} tasks completed
               </p>
             </div>
@@ -129,12 +129,12 @@ const ComplianceLog = () => {
         </div>
       </div>
 
-      {/* Insights Section */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+      {/* Insights & Activity Summary */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8">
         {/* AI Insights */}
-        <div className="lg:col-span-2 bg-white border border-green-300 rounded-xl shadow-md hover:shadow-lg transition p-6">
-          <h2 className="text-xl font-semibold text-green-700 mb-4 flex items-center gap-2">
-            <AlertTriangle size={22} /> AI Compliance Insights
+        <div className="lg:col-span-2 bg-white border border-green-300 rounded-xl shadow-md hover:shadow-lg transition p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-green-700 mb-4 flex items-center gap-2">
+            <AlertTriangle size={20} /> AI Compliance Insights
           </h2>
           {data.aiInsights.map((insight, index) => (
             <div
@@ -146,26 +146,26 @@ const ComplianceLog = () => {
               ) : (
                 <CheckCircle2 className="text-green-500 w-5 h-5 mt-1" />
               )}
-              <p className="text-base">{insight}</p>
+              <p className="text-sm sm:text-base leading-snug">{insight}</p>
             </div>
           ))}
         </div>
 
         {/* Activity Summary */}
-        <div className="bg-white border border-green-300 rounded-xl shadow-md hover:shadow-lg transition p-6">
-          <h2 className="text-xl font-semibold text-green-700 mb-4 flex items-center gap-2">
-            <ClipboardList size={22} /> Activity Summary
+        <div className="bg-white border border-green-300 rounded-xl shadow-md hover:shadow-lg transition p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-green-700 mb-4 flex items-center gap-2">
+            <ClipboardList size={20} /> Activity Summary
           </h2>
-          <div className="text-base text-gray-700 space-y-3">
+          <div className="text-sm sm:text-base text-gray-700 space-y-3">
             <p className="flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="text-green-600" size={18} /> Completed:
+                <CheckCircle2 className="text-green-600" size={16} /> Completed:
               </span>
               <span className="font-semibold">{data.completedTasks}</span>
             </p>
             <p className="flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <XCircle className="text-red-600" size={18} /> Missed:
+                <XCircle className="text-red-600" size={16} /> Missed:
               </span>
               <span className="font-semibold">{data.missedTasks}</span>
             </p>
@@ -176,14 +176,14 @@ const ComplianceLog = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col mt-6 gap-3">
+          <div className="flex flex-col mt-5 gap-3">
             <Link
               to="/dashboard/complianceLogbook"
-              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-md px-5 py-2.5 text-base font-semibold shadow-sm"
+              className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-md px-4 py-2.5 text-sm sm:text-base font-semibold shadow-sm transition-all"
             >
               <PlusCircle size={18} /> Log New Activity
             </Link>
-            <button className="flex items-center justify-center gap-2 bg-white border border-green-500 text-green-700 rounded-md px-5 py-2.5 text-base font-semibold hover:bg-green-50 transition-all shadow-sm">
+            <button className="flex items-center justify-center gap-2 bg-white border border-green-500 text-green-700 rounded-md px-4 py-2.5 text-sm sm:text-base font-semibold hover:bg-green-50 transition-all shadow-sm">
               <FileDown size={18} /> Generate Report
             </button>
           </div>

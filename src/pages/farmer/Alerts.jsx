@@ -15,7 +15,7 @@ export default function Alerts() {
   const [filter, setFilter] = useState("All");
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setAlerts([
         {
           id: 1,
@@ -49,7 +49,8 @@ export default function Alerts() {
         },
       ]);
       setLoading(false);
-    }, 1200);
+    }, 800); // ⏩ Reduced load time
+    return () => clearTimeout(timeout);
   }, []);
 
   const filteredAlerts =
@@ -58,125 +59,131 @@ export default function Alerts() {
       : alerts.filter((a) => a.severity.toLowerCase() === filter.toLowerCase());
 
   return (
-    <div className="p-6 md:p-10 font-poppins bg-gray-50 min-h-screen text-gray-800">
+    <div className="p-4 sm:p-6 md:p-10 font-poppins bg-gray-50 min-h-screen text-gray-800">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-6">
         <div className="flex items-center gap-3">
-          <AlertTriangle className="text-red-600" size={40} />
+          <AlertTriangle className="text-red-600" size={34} />
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-              Disease Outbreak Alerts 🚨
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              Disease Alerts 🚨
             </h1>
-            <p className="text-base text-gray-600">
-              Stay updated on nearby outbreaks and safety advisories.
+            <p className="text-sm sm:text-base text-gray-600">
+              Stay updated on nearby outbreaks & safety steps.
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 mt-4 sm:mt-0">
+
+        <div className="flex items-center gap-2 mt-4 sm:mt-0">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="border border-green-300 text-gray-800 px-3 py-2 rounded-lg shadow-sm text-sm focus:outline-none"
+            className="border border-green-300 text-gray-800 px-2 sm:px-3 py-2 rounded-lg shadow-sm text-sm focus:outline-none"
           >
-            <option value="All">All Severities</option>
+            <option value="All">All</option>
             <option value="High">High</option>
             <option value="Medium">Medium</option>
             <option value="Low">Low</option>
           </select>
           <button
             onClick={() => window.location.reload()}
-            className="flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm"
+            className="flex items-center gap-1 sm:gap-2 bg-green-700 hover:bg-green-800 text-white px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold shadow-sm"
           >
-            <RefreshCw size={16} /> Refresh
+            <RefreshCw size={14} /> Refresh
           </button>
         </div>
       </div>
 
-      {/* Loading State */}
+      {/* Loading */}
       {loading ? (
-        <div className="flex justify-center items-center h-[70vh]">
+        <div className="flex justify-center items-center h-[65vh]">
           <div className="text-center">
-            <Activity className="animate-spin text-green-700 mx-auto mb-4" size={40} />
-            <p className="text-gray-600 font-medium text-lg">
-              Fetching live alerts…
+            <Activity
+              className="animate-spin text-green-700 mx-auto mb-3"
+              size={36}
+            />
+            <p className="text-gray-600 font-medium text-base">
+              Fetching latest alerts...
             </p>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {filteredAlerts.map((alert) => (
-            <div
-              key={alert.id}
-              className={`p-6 rounded-xl shadow-md border-l-8 ${
-                alert.severity === "High"
-                  ? "border-red-600 bg-red-50"
-                  : alert.severity === "Medium"
-                  ? "border-yellow-500 bg-yellow-50"
-                  : "border-green-500 bg-green-50"
-              } transition-all hover:shadow-lg`}
-            >
-              <div className="flex justify-between items-start mb-3">
-                <h2 className="text-xl font-bold text-gray-900">
-                  {alert.disease}
-                </h2>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                    alert.severity === "High"
-                      ? "bg-red-600 text-white"
-                      : alert.severity === "Medium"
-                      ? "bg-yellow-500 text-white"
-                      : "bg-green-600 text-white"
-                  }`}
-                >
-                  {alert.severity}
-                </span>
-              </div>
-
-              <div className="space-y-2 text-gray-700">
-                <p className="flex items-center gap-2">
-                  <MapPin size={18} className="text-green-700" />
-                  <span>
-                    <strong>Location:</strong> {alert.location}
+        <>
+          {/* Alerts List */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8 max-w-7xl mx-auto">
+            {filteredAlerts.map((alert) => (
+              <div
+                key={alert.id}
+                className={`p-5 sm:p-6 rounded-xl shadow-md border-l-8 ${
+                  alert.severity === "High"
+                    ? "border-red-600 bg-red-50"
+                    : alert.severity === "Medium"
+                    ? "border-yellow-500 bg-yellow-50"
+                    : "border-green-600 bg-green-50"
+                } hover:shadow-lg transition-all`}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                    {alert.disease}
+                  </h2>
+                  <span
+                    className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold ${
+                      alert.severity === "High"
+                        ? "bg-red-600 text-white"
+                        : alert.severity === "Medium"
+                        ? "bg-yellow-500 text-white"
+                        : "bg-green-600 text-white"
+                    }`}
+                  >
+                    {alert.severity}
                   </span>
-                </p>
-                <p className="flex items-center gap-2">
-                  <Thermometer size={18} className="text-green-700" />
-                  <span>
-                    <strong>Date:</strong> {alert.date}
-                  </span>
-                </p>
-                <p className="flex items-center gap-2">
-                  <ShieldAlert size={18} className="text-green-700" />
-                  <span>
-                    <strong>Proximity:</strong> {alert.distance}
-                  </span>
-                </p>
-              </div>
+                </div>
 
-              <div className="mt-4 bg-white border border-green-200 p-4 rounded-lg shadow-sm">
-                <h3 className="text-base font-semibold text-green-700 mb-1">
-                  Recommended Action
-                </h3>
-                <p className="text-sm text-gray-700">{alert.recommendation}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+                <div className="space-y-1.5 text-gray-700 text-sm sm:text-base">
+                  <p className="flex items-center gap-2">
+                    <MapPin size={16} className="text-green-700" />
+                    <span>
+                      <strong>Location:</strong> {alert.location}
+                    </span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Thermometer size={16} className="text-green-700" />
+                    <span>
+                      <strong>Date:</strong> {alert.date}
+                    </span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <ShieldAlert size={16} className="text-green-700" />
+                    <span>
+                      <strong>Proximity:</strong> {alert.distance}
+                    </span>
+                  </p>
+                </div>
 
-      {/* Summary Section */}
-      {!loading && (
-        <div className="max-w-7xl mx-auto mt-10 bg-white border border-green-300 rounded-xl shadow p-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <CheckCircle className="text-green-700" /> AI Summary
-          </h2>
-          <p className="text-gray-700 text-base leading-relaxed">
-            There are currently <strong>{alerts.length}</strong> disease alerts in
-            nearby regions. Based on current weather and outbreak trends, extra
-            hygiene and restricted farm movement are advised for the next{" "}
-            <strong>7 days</strong>. Keep monitoring updates for your district.
-          </p>
-        </div>
+                <div className="mt-4 bg-white border border-green-200 p-3 sm:p-4 rounded-lg shadow-sm">
+                  <h3 className="text-sm sm:text-base font-semibold text-green-700 mb-1">
+                    Recommended Action
+                  </h3>
+                  <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
+                    {alert.recommendation}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Summary */}
+          <div className="max-w-7xl mx-auto mt-8 sm:mt-10 bg-white border border-green-300 rounded-xl shadow p-5 sm:p-6">
+            <h2 className="text-lg sm:text-2xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <CheckCircle className="text-green-700" /> AI Summary
+            </h2>
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+              Currently <strong>{alerts.length}</strong> active alerts detected in
+              nearby districts. Maintain strict hygiene for the next{" "}
+              <strong>7 days</strong> and restrict farm movement when possible.
+            </p>
+          </div>
+        </>
       )}
     </div>
   );

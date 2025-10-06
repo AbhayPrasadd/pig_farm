@@ -12,6 +12,7 @@ import {
   Droplets,
   Wind,
   Eye,
+  ArrowRight,
 } from "lucide-react";
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/600.css";
@@ -117,8 +118,8 @@ const Dashboard = () => {
             👨‍🌾 Welcome, {userData?.fullName || "Farmer"} 👋
           </h1>
           <p className="text-sm text-gray-500">
-            {userData?.district || "Bhubaneswar"},{" "}
-            {userData?.state || "Odisha"}
+            {userData?.district || "Hazaribagh"},{" "}
+            {userData?.state || "Jharkhand"}
           </p>
         </div>
       </div>
@@ -130,37 +131,48 @@ const Dashboard = () => {
         ) : weatherData?.current ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Weather Info */}
-            <div className="flex items-center gap-4">
-              <img
-                src={weatherData.current?.condition?.icon}
-                alt="Weather Icon"
-                className="h-12 w-12"
-              />
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900">
-                  {weatherData.location?.name || "Unknown"}
-                </h2>
-                <p className="text-sm text-gray-700">
-                  Temp: {weatherData.current?.temp_c ?? "--"}°C |{" "}
-                  {weatherData.current?.condition?.text || "N/A"}
-                </p>
-                <div className="flex flex-wrap gap-3 mt-2 text-gray-600 text-xs">
-                  <span className="flex items-center gap-1">
-                    <Droplets size={14} /> {weatherData.current?.humidity ?? "--"}%
-                    Humidity
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Wind size={14} /> {weatherData.current?.wind_kph ?? "--"} km/h Wind
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Eye size={14} /> {weatherData.current?.vis_km ?? "--"} km Visibility
-                  </span>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <img
+                  src={weatherData.current?.condition?.icon}
+                  alt="Weather Icon"
+                  className="h-12 w-12"
+                />
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    {weatherData.location?.name || "Unknown"}
+                    <Link
+                      to="/dashboard/weather"
+                      className="text-green-600 hover:text-green-700 transition"
+                      title="View full weather details"
+                    >
+                      <ArrowRight size={18} />
+                    </Link>
+                  </h2>
+                  <p className="text-sm text-gray-700">
+                    Temp: {weatherData.current?.temp_c ?? "--"}°C |{" "}
+                    {weatherData.current?.condition?.text || "N/A"}
+                  </p>
+                  <div className="flex flex-wrap gap-3 mt-2 text-gray-600 text-xs">
+                    <span className="flex items-center gap-1">
+                      <Droplets size={14} />{" "}
+                      {weatherData.current?.humidity ?? "--"}% Humidity
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Wind size={14} />{" "}
+                      {weatherData.current?.wind_kph ?? "--"} km/h Wind
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Eye size={14} />{" "}
+                      {weatherData.current?.vis_km ?? "--"} km Visibility
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Suggestions */}
-            <div>
+            {/* Biosecurity Suggestions — hidden on mobile */}
+            <div className="hidden md:block">
               <h3 className="text-sm font-semibold text-green-700 mb-2">
                 Biosecurity Suggestions
               </h3>
@@ -209,7 +221,7 @@ const Dashboard = () => {
           subtitle="Learn best farm safety practices"
         />
         <Card
-          to="/dashboard/expenseTracker"
+          to="/dashboard/expense"
           icon={<Wallet size={32} />}
           title="Expense Tracker"
           subtitle="Track daily farm expenses easily"

@@ -128,7 +128,7 @@ export default function ComplianceLogbook() {
   };
 
   return (
-    <div className="p-6 md:p-10 font-poppins bg-gray-50 min-h-screen text-gray-800">
+    <div className="p-6 md:p-10 font-poppins  text-gray-800">
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-6">
         <ClipboardList className="text-green-700" size={34} />
