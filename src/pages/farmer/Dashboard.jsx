@@ -42,7 +42,6 @@ const Dashboard = () => {
     const fetchWeatherData = async (city) => {
       const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
 
-      // prevent invalid request if key missing
       if (!apiKey) {
         console.warn("⚠️ Weather API key is missing");
         setWeatherError("Weather data unavailable (API key missing)");
@@ -56,7 +55,6 @@ const Dashboard = () => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
 
-        // handle API error structure
         if (data?.error) {
           setWeatherError(data.error.message || "Weather API error");
         } else {
@@ -72,7 +70,8 @@ const Dashboard = () => {
   }, []);
 
   const generateBiosecuritySuggestions = () => {
-    if (!weatherData?.current) return ["Maintain daily disinfection and limit visitor entry."];
+    if (!weatherData?.current)
+      return ["Maintain daily disinfection and limit visitor entry."];
 
     const temp = weatherData.current?.temp_c ?? 0;
     const condition = weatherData.current?.condition?.text?.toLowerCase() ?? "";
@@ -127,9 +126,7 @@ const Dashboard = () => {
       {/* Weather & Suggestions */}
       <div className="bg-white border border-green-200 rounded-lg shadow-md p-5 mb-8">
         {weatherError ? (
-          <p className="text-sm text-red-500">
-            ⚠️ {weatherError}
-          </p>
+          <p className="text-sm text-red-500">⚠️ {weatherError}</p>
         ) : weatherData?.current ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Weather Info */}
@@ -149,7 +146,8 @@ const Dashboard = () => {
                 </p>
                 <div className="flex flex-wrap gap-3 mt-2 text-gray-600 text-xs">
                   <span className="flex items-center gap-1">
-                    <Droplets size={14} /> {weatherData.current?.humidity ?? "--"}% Humidity
+                    <Droplets size={14} /> {weatherData.current?.humidity ?? "--"}%
+                    Humidity
                   </span>
                   <span className="flex items-center gap-1">
                     <Wind size={14} /> {weatherData.current?.wind_kph ?? "--"} km/h Wind
@@ -179,40 +177,40 @@ const Dashboard = () => {
       </div>
 
       {/* Dashboard Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-5 sm:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
         <Card
           to="/dashboard/riskAssessment"
-          icon={<ClipboardCheck size={38} />}
+          icon={<ClipboardCheck size={32} />}
           title="Risk Assessment"
           subtitle="Evaluate your farm’s biosecurity level"
         />
         <Card
           to="/dashboard/complianceLog"
-          icon={<FileText size={38} />}
+          icon={<FileText size={32} />}
           title="Compliance Logbook"
           subtitle="Record actions and cleaning logs"
         />
         <Card
           to="/dashboard/aiAdvisor"
-          icon={<Bot size={38} />}
+          icon={<Bot size={32} />}
           title="AI Assistant"
           subtitle="Ask questions in your language"
         />
         <Card
           to="/dashboard/alerts"
-          icon={<AlertTriangle size={38} />}
+          icon={<AlertTriangle size={32} />}
           title="Outbreak Alerts"
           subtitle="Monitor nearby disease risks"
         />
         <Card
           to="/dashboard/training"
-          icon={<GraduationCap size={38} />}
+          icon={<GraduationCap size={32} />}
           title="Training & Learning"
           subtitle="Learn best farm safety practices"
         />
         <Card
           to="/dashboard/expenseTracker"
-          icon={<Wallet size={38} />}
+          icon={<Wallet size={32} />}
           title="Expense Tracker"
           subtitle="Track daily farm expenses easily"
         />
@@ -221,17 +219,34 @@ const Dashboard = () => {
   );
 };
 
-// ✅ Reusable Card Component
+// ✅ Responsive Card Component
 const Card = ({ to, icon, title, subtitle }) => (
   <Link
     to={to}
-    className="bg-white border-2 border-green-200 rounded-xl shadow-md hover:shadow-xl hover:border-green-400 hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col items-center text-center min-h-[200px]"
+    className="
+      bg-white 
+      border-2 border-green-200 
+      rounded-xl 
+      shadow-md 
+      hover:shadow-xl hover:border-green-400 
+      hover:-translate-y-1 
+      transition-all duration-300 
+      flex flex-col items-center justify-center 
+      text-center 
+      p-4 sm:p-6 
+      min-h-[140px] sm:min-h-[200px]
+    "
   >
-    <div className="w-14 h-14 flex items-center justify-center rounded-full bg-gray-50 shadow-sm mb-4 text-green-700">
+    <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-gray-50 shadow-sm mb-2 sm:mb-4 text-green-700">
       {icon}
     </div>
-    <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-    <p className="text-xs sm:text-sm text-gray-500 mt-2 leading-snug max-w-[200px]">
+
+    <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+      {title}
+    </h3>
+
+    {/* Hide subtitle on small screens */}
+    <p className="hidden sm:block text-xs sm:text-sm text-gray-500 mt-1 leading-snug max-w-[200px]">
       {subtitle}
     </p>
   </Link>
