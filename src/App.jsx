@@ -13,7 +13,8 @@ import AIAdvisor from "./pages/farmer/AIAdvisor";
 import Alerts from "./pages/farmer/Alerts";
 import Weather from "./pages/farmer/Weather";
 import Training from "./pages/farmer/Training";
-import FarmerProfile from "./pages/farmer/FarmerProfile"; // ✅ NEW PAGE IMPORT
+import FarmerProfile from "./pages/farmer/FarmerProfile"; 
+import FarmExpense from "./pages/farmer/FarmExpense"; 
 
 // 🧑‍💼 Officer Pages
 import OfficerDashboard from "./pages/officer/OfficerDashboard";
@@ -98,7 +99,8 @@ const App = () => {
             <Route path="alerts" element={<Alerts />} />
             <Route path="weather" element={<Weather />} />
             <Route path="training" element={<Training />} />
-            <Route path="profilePage" element={<FarmerProfile />} /> {/* ✅ NEW ROUTE */}
+            <Route path="expense" element={<FarmExpense/>} />
+            <Route path="profilePage" element={<FarmerProfile />} /> 
           </>
         )}
 

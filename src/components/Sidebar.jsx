@@ -28,7 +28,7 @@ const Sidebar = ({ setIsSidebarOpen }) => {
       { name: "Compliance", path: "/dashboard/complianceLog", icon: <FileText size={20} /> }, 
       { name: "AI Advisor", path: "/dashboard/aiAdvisor", icon: <Bot size={20} /> },
       { name: "Training & Learning", path: "/dashboard/training", icon: <GraduationCap size={20} /> },
-      { name: "Expense Tracker", path: "/dashboard/expenseTracker", icon: <Wallet size={20} /> },
+      { name: "Expense Tracker", path: "/dashboard/expense", icon: <Wallet size={20} /> },
       { name: "Profile", path: "/dashboard/profilePage", icon: <User size={20} /> },
     ],
     [t]

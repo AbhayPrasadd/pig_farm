@@ -21,27 +21,50 @@ const Dashboard = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [weatherData, setWeatherData] = useState(null);
+  const [weatherError, setWeatherError] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (auth.currentUser) {
-        const userRef = doc(db, "users", auth.currentUser.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) setUserData(userSnap.data());
+      try {
+        if (auth.currentUser) {
+          const userRef = doc(db, "users", auth.currentUser.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) setUserData(userSnap.data());
+        }
+      } catch (err) {
+        console.error("User fetch error:", err);
       }
-      fetchWeatherData("Bhubaneswar");
+
+      await fetchWeatherData("Bhubaneswar");
       setLoading(false);
     };
 
     const fetchWeatherData = async (city) => {
       const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+
+      // prevent invalid request if key missing
+      if (!apiKey) {
+        console.warn("⚠️ Weather API key is missing");
+        setWeatherError("Weather data unavailable (API key missing)");
+        return;
+      }
+
       const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
+
       try {
         const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-        setWeatherData(data);
+
+        // handle API error structure
+        if (data?.error) {
+          setWeatherError(data.error.message || "Weather API error");
+        } else {
+          setWeatherData(data);
+        }
       } catch (error) {
-        console.error("Weather fetch error:", error.message);
+        console.error("Weather fetch error:", error);
+        setWeatherError("Unable to load weather data");
       }
     };
 
@@ -49,10 +72,10 @@ const Dashboard = () => {
   }, []);
 
   const generateBiosecuritySuggestions = () => {
-    if (!weatherData) return [];
+    if (!weatherData?.current) return ["Maintain daily disinfection and limit visitor entry."];
 
-    const temp = weatherData.current.temp_c;
-    const condition = weatherData.current.condition.text.toLowerCase();
+    const temp = weatherData.current?.temp_c ?? 0;
+    const condition = weatherData.current?.condition?.text?.toLowerCase() ?? "";
     const farmType = userData?.farmType || "Pig Farm";
     let suggestions = [];
 
@@ -87,7 +110,7 @@ const Dashboard = () => {
     );
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 font-poppins ">
+    <div className="p-4 sm:p-6 md:p-8 font-poppins">
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -95,39 +118,44 @@ const Dashboard = () => {
             👨‍🌾 Welcome, {userData?.fullName || "Farmer"} 👋
           </h1>
           <p className="text-sm text-gray-500">
-            {userData?.district || "Bhubaneswar"}, {userData?.state || "Odisha"}
+            {userData?.district || "Bhubaneswar"},{" "}
+            {userData?.state || "Odisha"}
           </p>
         </div>
       </div>
 
       {/* Weather & Suggestions */}
       <div className="bg-white border border-green-200 rounded-lg shadow-md p-5 mb-8">
-        {weatherData ? (
+        {weatherError ? (
+          <p className="text-sm text-red-500">
+            ⚠️ {weatherError}
+          </p>
+        ) : weatherData?.current ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Weather Info */}
             <div className="flex items-center gap-4">
               <img
-                src={weatherData.current.condition.icon}
+                src={weatherData.current?.condition?.icon}
                 alt="Weather Icon"
                 className="h-12 w-12"
               />
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">
-                  {weatherData.location.name}
+                  {weatherData.location?.name || "Unknown"}
                 </h2>
                 <p className="text-sm text-gray-700">
-                  Temp: {weatherData.current.temp_c}°C |{" "}
-                  {weatherData.current.condition.text}
+                  Temp: {weatherData.current?.temp_c ?? "--"}°C |{" "}
+                  {weatherData.current?.condition?.text || "N/A"}
                 </p>
                 <div className="flex flex-wrap gap-3 mt-2 text-gray-600 text-xs">
                   <span className="flex items-center gap-1">
-                    <Droplets size={14} /> {weatherData.current.humidity}% Humidity
+                    <Droplets size={14} /> {weatherData.current?.humidity ?? "--"}% Humidity
                   </span>
                   <span className="flex items-center gap-1">
-                    <Wind size={14} /> {weatherData.current.wind_kph} km/h Wind
+                    <Wind size={14} /> {weatherData.current?.wind_kph ?? "--"} km/h Wind
                   </span>
                   <span className="flex items-center gap-1">
-                    <Eye size={14} /> {weatherData.current.vis_km} km Visibility
+                    <Eye size={14} /> {weatherData.current?.vis_km ?? "--"} km Visibility
                   </span>
                 </div>
               </div>
@@ -193,7 +221,7 @@ const Dashboard = () => {
   );
 };
 
-// ✅ Card Component with Green Border
+// ✅ Reusable Card Component
 const Card = ({ to, icon, title, subtitle }) => (
   <Link
     to={to}
