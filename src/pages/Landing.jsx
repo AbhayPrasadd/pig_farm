@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import {
   ChevronDown,
-  Shield,
+  Leaf,
   TrendingUp,
-  AlertTriangle,
+  Shield,
   Users,
+  Facebook,
+  Twitter,
+  Instagram,
+  Star,
   CheckCircle,
   ArrowRight,
-  Bell,
+  Zap,
   Globe,
   Award,
-  FileText,
-  Activity,
-  Smartphone,
-  BarChart3,
-  BookOpen,
-  ClipboardCheck,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 /* ---------------- Floating Element ---------------- */
 const FloatingElement = ({ children, delay = 0 }) => (
@@ -34,7 +33,7 @@ const FloatingElement = ({ children, delay = 0 }) => (
 /* ---------------- Glass Card ---------------- */
 const GlassCard = ({ children, className = "" }) => (
   <div
-    className={`backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl sm:rounded-2xl shadow-2xl ${className}`}
+    className={`backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-2xl ${className}`}
   >
     {children}
   </div>
@@ -42,34 +41,34 @@ const GlassCard = ({ children, className = "" }) => (
 
 /* ---------------- Stat Card ---------------- */
 const StatCard = ({ number, label, icon: Icon }) => (
-  <GlassCard className="p-4 sm:p-6 text-center hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-    <Icon className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 sm:mb-3 text-blue-400" />
-    <div className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">{number}</div>
-    <div className="text-gray-200 text-xs sm:text-sm">{label}</div>
+  <GlassCard className="p-6 text-center hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+    <Icon className="w-8 h-8 mx-auto mb-3 text-yellow-400" />
+    <div className="text-3xl font-bold text-white mb-2">{number}</div>
+    <div className="text-gray-200 text-sm">{label}</div>
   </GlassCard>
 );
 
 /* ---------------- Feature Card ---------------- */
 const FeatureCard = ({ icon: Icon, title, description, gradient }) => (
-  <div className="group cursor-pointer h-full">
+  <div className="group cursor-pointer">
     <div
-      className={`p-6 sm:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-br ${gradient} shadow-xl transform hover:scale-105 transition-all duration-300 hover:shadow-2xl h-full flex flex-col`}
+      className={`p-8 rounded-2xl bg-gradient-to-br ${gradient} shadow-xl transform hover:scale-105 transition-all duration-300 hover:shadow-2xl`}
     >
-      <div className="bg-white/20 rounded-full w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-white/30 transition-all duration-300">
-        <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+      <div className="bg-white/20 rounded-full w-16 h-16 flex items-center justify-center mb-6 group-hover:bg-white/30 transition-all duration-300">
+        <Icon className="w-8 h-8 text-white" />
       </div>
-      <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">{title}</h3>
-      <p className="text-sm sm:text-base text-white/90 leading-relaxed flex-grow">{description}</p>
-      <div className="mt-4 sm:mt-6 flex items-center text-white/80 group-hover:text-white transition-colors">
-        <span className="text-xs sm:text-sm font-medium">Learn More</span>
-        <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+      <h3 className="text-xl font-bold text-white mb-4">{title}</h3>
+      <p className="text-white/90 leading-relaxed">{description}</p>
+      <div className="mt-6 flex items-center text-white/80 group-hover:text-white transition-colors">
+        <span className="text-sm font-medium">Learn More</span>
+        <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
       </div>
     </div>
   </div>
 );
 
 /* ---------------- Section ---------------- */
-const Section = ({ title, description, image, reverse, gradient, features }) => {
+const Section = ({ title, description, image, reverse, gradient }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -89,12 +88,12 @@ const Section = ({ title, description, image, reverse, gradient, features }) => 
   return (
     <section
       id={`section-${title.replace(/\s+/g, "-").toLowerCase()}`}
-      className={`py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-br ${gradient} overflow-hidden`}
+      className={`py-20 px-6 bg-gradient-to-br ${gradient} overflow-hidden`}
     >
-      <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-12">
+      <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
         {/* Text Side */}
         <div
-          className={`w-full lg:w-1/2 ${reverse ? "lg:order-2" : ""} transform transition-all duration-1000 ${
+          className={`lg:w-1/2 ${reverse ? "lg:order-2" : ""} transform transition-all duration-1000 ${
             isVisible
               ? "translate-x-0 opacity-100"
               : reverse
@@ -102,51 +101,41 @@ const Section = ({ title, description, image, reverse, gradient, features }) => 
               : "-translate-x-12 opacity-0"
           }`}
         >
-          <div className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-100 text-blue-700 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6">
-            🛡️ Biosecurity First
+          <div className="inline-block px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-6">
+            ✨ Innovation
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             {title}
           </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">
+          <p className="text-xl text-gray-600 mb-8 leading-relaxed max-w-2xl">
             {description}
           </p>
-          {features && (
-            <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-              {features.map((feature, idx) => (
-                <li key={idx} className="flex items-start">
-                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base text-gray-700">{feature}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6">
-            <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-lg text-sm sm:text-base">
-              Get Started
+          <div className="flex items-center space-x-6">
+            <button className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl font-semibold hover:from-green-700 hover:to-green-800 transform hover:scale-105 transition-all duration-300 shadow-lg">
+              Learn More
             </button>
-            <button className="flex items-center justify-center text-blue-700 font-semibold hover:text-blue-800 transition-colors text-sm sm:text-base">
+            <button className="flex items-center text-green-700 font-semibold hover:text-green-800 transition-colors">
               <span>Watch Demo</span>
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
+              <ArrowRight className="w-5 h-5 ml-2" />
             </button>
           </div>
         </div>
 
         {/* Image Side */}
         <div
-          className={`w-full lg:w-1/2 ${reverse ? "lg:order-1" : ""} transform transition-all duration-1000 delay-300 ${
+          className={`lg:w-1/2 ${reverse ? "lg:order-1" : ""} transform transition-all duration-1000 delay-300 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
           }`}
         >
           <div className="relative">
-            <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-xl sm:rounded-2xl opacity-20 blur-xl"></div>
+            <div className="absolute -inset-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl opacity-20 blur-xl"></div>
             <img
               src={image}
               alt={title}
-              className="relative w-full h-48 sm:h-64 lg:h-80 object-cover rounded-xl sm:rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
+              className="relative w-full h-80 object-cover rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2">
-              <Shield className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600" />
+            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2">
+              <CheckCircle className="w-6 h-6 text-green-600" />
             </div>
           </div>
         </div>
@@ -166,9 +155,9 @@ const ParallaxSection = () => {
   }, []);
 
   return (
-    <section className="relative py-16 sm:py-24 lg:py-32 overflow-hidden">
+    <section className="relative py-32 overflow-hidden">
       <div
-        className="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900"
+        className="absolute inset-0 bg-gradient-to-br from-green-900 via-green-800 to-blue-900"
         style={{ transform: `translateY(${scrollY * 0.5}px)` }}
       />
 
@@ -177,7 +166,7 @@ const ParallaxSection = () => {
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 sm:w-2 sm:h-2 bg-white/20 rounded-full animate-pulse"
+            className="absolute w-2 h-2 bg-white/20 rounded-full animate-pulse"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -187,41 +176,42 @@ const ParallaxSection = () => {
         ))}
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center text-white">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6">
-          Protecting Livestock Health
+      <div className="relative z-10 container mx-auto px-6 text-center text-white">
+        <h2 className="text-5xl lg:text-6xl font-bold mb-6">
+          Transforming Agriculture
         </h2>
-        <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-10 sm:mb-16 px-4">
-          Empowering farmers with digital tools to prevent disease outbreaks and ensure sustainable livestock production
+        <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-16">
+          Join thousands of farmers revolutionizing their harvests with
+          AI-powered insights
         </p>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 mb-10 sm:mb-16">
-          <StatCard number="15K+" label="Farmers Protected" icon={Users} />
-          <StatCard number="40%" label="Disease Reduction" icon={Shield} />
-          <StatCard number="35%" label="Productivity Gain" icon={TrendingUp} />
-          <StatCard number="12+" label="States Covered" icon={Globe} />
+        <div className="grid md:grid-cols-4 gap-8 mb-16">
+          <StatCard number="10K+" label="Active Farmers" icon={Users} />
+          <StatCard number="30%" label="Water Savings" icon={Leaf} />
+          <StatCard number="25%" label="Yield Increase" icon={TrendingUp} />
+          <StatCard number="50+" label="Countries Served" icon={Globe} />
         </div>
 
         {/* Features */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <FeatureCard
-            icon={AlertTriangle}
-            title="Risk Assessment"
-            description="Customized biosecurity risk evaluation tools based on your farm's location and livestock type."
-            gradient="from-red-600 to-orange-600"
+            icon={Zap}
+            title="AI-Powered Insights"
+            description="Real-time crop analysis and predictive modeling for better farming."
+            gradient="from-purple-600 to-pink-600"
           />
           <FeatureCard
-            icon={BookOpen}
-            title="Interactive Training"
-            description="Multilingual training modules on best practices for pig and poultry biosecurity management."
+            icon={Shield}
+            title="Weather Protection"
+            description="Advanced weather forecasting to protect your investments."
             gradient="from-blue-600 to-cyan-600"
           />
           <FeatureCard
-            icon={Bell}
-            title="Real-Time Alerts"
-            description="Instant notifications about disease outbreaks, regulatory updates, and biosecurity threats."
-            gradient="from-purple-600 to-pink-600"
+            icon={Award}
+            title="Market Intelligence"
+            description="Live market prices and demand forecasting to maximize profits."
+            gradient="from-green-600 to-teal-600"
           />
         </div>
       </div>
@@ -231,22 +221,22 @@ const ParallaxSection = () => {
 
 /* ---------------- Testimonials ---------------- */
 const TestimonialCard = ({ quote, author, role, rating }) => (
-  <GlassCard className="p-6 sm:p-8 h-full flex flex-col">
-    <div className="flex mb-3 sm:mb-4">
+  <GlassCard className="p-8 h-full">
+    <div className="flex mb-4">
       {[...Array(rating)].map((_, i) => (
-        <CheckCircle key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 fill-current" />
+        <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
       ))}
     </div>
-    <blockquote className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base lg:text-lg leading-relaxed flex-grow">
+    <blockquote className="text-gray-700 mb-6 text-lg leading-relaxed">
       "{quote}"
     </blockquote>
-    <div className="flex items-center mt-auto">
-      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base">
+    <div className="flex items-center">
+      <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold">
         {author.charAt(0)}
       </div>
-      <div className="ml-3 sm:ml-4">
-        <div className="font-semibold text-gray-900 text-sm sm:text-base">{author}</div>
-        <div className="text-gray-600 text-xs sm:text-sm">{role}</div>
+      <div className="ml-4">
+        <div className="font-semibold text-gray-900">{author}</div>
+        <div className="text-gray-600 text-sm">{role}</div>
       </div>
     </div>
   </GlassCard>
@@ -254,58 +244,55 @@ const TestimonialCard = ({ quote, author, role, rating }) => (
 
 /* ---------------- Footer ---------------- */
 const Footer = () => (
-  <footer className="bg-gradient-to-br from-gray-900 to-black text-white py-12 sm:py-16">
-    <div className="container mx-auto px-4 sm:px-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
+  <footer className="bg-gradient-to-br from-gray-900 to-black text-white py-16">
+    <div className="container mx-auto px-6">
+      <div className="grid md:grid-cols-4 gap-8 mb-12">
         {/* Brand */}
-        <div className="col-span-2 md:col-span-1">
-          <div className="flex items-center mb-3 sm:mb-4">
-            <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400 mr-2 sm:mr-3" />
-            <span className="text-xl sm:text-2xl font-bold">BioSecure Pro</span>
+        <div>
+          <div className="flex items-center mb-4">
+            <Leaf className="w-8 h-8 text-green-400 mr-3" />
+            <span className="text-2xl font-bold">SwarnBhoomi</span>
           </div>
-          <p className="text-gray-400 text-sm sm:text-base mb-4 sm:mb-6">
-            Digital biosecurity management for safer, healthier livestock farming.
+          <p className="text-gray-400 mb-6">
+            Transforming agriculture with AI and smart data solutions for a
+            sustainable future.
           </p>
         </div>
 
         {/* Links */}
         <div>
-          <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Platform</h4>
-          <ul className="space-y-1.5 sm:space-y-2 text-gray-400 text-xs sm:text-sm">
-            <li className="hover:text-white cursor-pointer transition-colors">Risk Assessment</li>
-            <li className="hover:text-white cursor-pointer transition-colors">Training Hub</li>
-            <li className="hover:text-white cursor-pointer transition-colors">Compliance</li>
-            <li className="hover:text-white cursor-pointer transition-colors">Alerts</li>
+          <h4 className="font-semibold mb-4">Product</h4>
+          <ul className="space-y-2 text-gray-400">
+            <li>Features</li>
+            <li>Pricing</li>
+            <li>API</li>
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Resources</h4>
-          <ul className="space-y-1.5 sm:space-y-2 text-gray-400 text-xs sm:text-sm">
-            <li className="hover:text-white cursor-pointer transition-colors">Guidelines</li>
-            <li className="hover:text-white cursor-pointer transition-colors">Case Studies</li>
-            <li className="hover:text-white cursor-pointer transition-colors">Research</li>
-            <li className="hover:text-white cursor-pointer transition-colors">FAQ</li>
+          <h4 className="font-semibold mb-4">Company</h4>
+          <ul className="space-y-2 text-gray-400">
+            <li>About</li>
+            <li>Careers</li>
+            <li>Contact</li>
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Support</h4>
-          <ul className="space-y-1.5 sm:space-y-2 text-gray-400 text-xs sm:text-sm">
-            <li className="hover:text-white cursor-pointer transition-colors">Help Center</li>
-            <li className="hover:text-white cursor-pointer transition-colors">Contact Us</li>
-            <li className="hover:text-white cursor-pointer transition-colors">Community</li>
-            <li className="hover:text-white cursor-pointer transition-colors">Partners</li>
+          <h4 className="font-semibold mb-4">Support</h4>
+          <ul className="space-y-2 text-gray-400">
+            <li>Help Center</li>
+            <li>Documentation</li>
+            <li>Community</li>
           </ul>
         </div>
       </div>
 
-      <div className="border-t border-gray-800 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p className="text-gray-400 text-xs sm:text-sm text-center md:text-left">
-          &copy; 2025 BioSecure Pro. Protecting livestock, empowering farmers.
+      <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p className="text-gray-400">
+          &copy; 2024 SwarnBhoomi. All rights reserved.
         </p>
-        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm">
-          <a href="#" className="hover:text-blue-400 transition-colors">Privacy</a>
-          <a href="#" className="hover:text-blue-400 transition-colors">Terms</a>
-          <a href="#" className="hover:text-blue-400 transition-colors">Accessibility</a>
+        <div className="flex space-x-6 mt-4 md:mt-0">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
         </div>
       </div>
     </div>
@@ -315,6 +302,7 @@ const Footer = () => (
 /* ---------------- Landing Page ---------------- */
 const LandingPage = () => {
   const [currentLang, setCurrentLang] = useState("en");
+  const navigate = useNavigate();
 
   const scrollToContent = () => {
     document.getElementById("content").scrollIntoView({ behavior: "smooth" });
@@ -336,64 +324,51 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
-          <div className="absolute inset-0 bg-black/50"></div>
-        </div>
-
-        {/* Animated particles */}
-        <div className="absolute inset-0">
-          {[...Array(15)].map((_, i) => (
-            <FloatingElement key={i} delay={i * 0.5}>
-              <div
-                className="absolute w-2 h-2 sm:w-3 sm:h-3 bg-blue-400/30 rounded-full"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-              />
-            </FloatingElement>
-          ))}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-900 via-green-800 to-blue-900">
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto">
-          <div className="mb-6 sm:mb-12">
+        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+          <div className="mb-12">
             <GlassCard className="inline-block p-2">
               <select
                 onChange={(e) => setCurrentLang(e.target.value)}
                 value={currentLang}
-                className="bg-transparent text-white font-semibold outline-none cursor-pointer text-sm sm:text-base px-2"
+                className="bg-transparent text-white font-semibold outline-none cursor-pointer"
               >
-                <option value="en" className="bg-gray-800">English</option>
-                <option value="hi" className="bg-gray-800">हिन्दी</option>
-                <option value="ta" className="bg-gray-800">தமிழ்</option>
-                <option value="te" className="bg-gray-800">తెలుగు</option>
+                <option value="en" className="bg-gray-800">
+                  English
+                </option>
+                <option value="hi" className="bg-gray-800">
+                  हिन्दी
+                </option>
               </select>
             </GlassCard>
           </div>
 
-          <div className="mb-4 sm:mb-6">
-            <Shield className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-blue-400 mx-auto animate-pulse" />
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 sm:mb-8 leading-tight px-2">
-            Biosecurity Portal for{" "}
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
-              Pig & Poultry Farmers
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
+            Welcome to{" "}
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-yellow-400">
+              SwarnBhoomi
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4">
-            Prevent disease outbreaks with AI-powered risk assessment, real-time alerts, compliance tracking, and expert training—all in one mobile-first platform.
+          <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto">
+            Transform your farming with AI-powered insights, smart irrigation,
+            and real-time market intelligence.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4">
-            <button className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 sm:px-10 py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-base sm:text-lg hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-2xl">
-              Start Free Assessment
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 inline-block" />
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+            <button
+              onClick={() => navigate("/auth")}
+              className="group bg-gradient-to-r from-green-500 to-green-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all duration-300 shadow-2xl"
+            >
+              Get Started Free
+              <ArrowRight className="w-5 h-5 ml-2 inline-block" />
             </button>
-            <button className="group border-2 border-white/30 text-white px-8 sm:px-10 py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-base sm:text-lg hover:bg-white/10 transition-all duration-300">
-              Learn More
+            <button className="group border-2 border-white/30 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all duration-300">
+              Watch Demo
             </button>
           </div>
 
@@ -401,7 +376,7 @@ const LandingPage = () => {
             onClick={scrollToContent}
             className="animate-bounce text-white/70 hover:text-white"
           >
-            <ChevronDown className="w-6 h-6 sm:w-8 sm:h-8 mx-auto" />
+            <ChevronDown className="w-8 h-8 mx-auto" />
           </button>
         </div>
       </section>
@@ -409,115 +384,58 @@ const LandingPage = () => {
       {/* Content Sections */}
       <div id="content">
         <Section
-          title="The Biosecurity Challenge"
-          description="Disease outbreaks like Avian Influenza and African Swine Fever threaten food security, cause massive economic losses, and destroy rural livelihoods. Small farmers lack access to practical biosecurity information and tools."
-          image="https://images.unsplash.com/photo-1560493676-04071c5f467b?w=800&h=600&fit=crop"
-          gradient="from-white to-red-50"
-          features={[
-            "Avian Influenza and ASF outbreaks causing severe losses",
-            "Limited access to biosecurity training and resources",
-            "Complex regulatory compliance requirements",
-            "No real-time disease monitoring or alerts"
-          ]}
+          title="Who We Are"
+          description="We are a team of innovators, agronomists, and technologists working towards revolutionizing agriculture through AI and sustainable practices."
+          image="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=600&h=400&fit=crop"
+          gradient="from-white to-green-50"
+        />
+
+        {/* Re-arranged flow */}
+        <Section
+          title="The Challenge We're Solving"
+          description="Farmers face climate change, water scarcity, unpredictable weather, and lack of real-time market insights. Traditional methods are no longer enough."
+          image="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&h=400&fit=crop"
+          reverse
+          gradient="from-blue-50 to-indigo-50"
         />
 
         <Section
-          title="Our Comprehensive Solution"
-          description="A mobile-first digital platform that puts biosecurity management in your hands. Get customized risk assessments, expert training, compliance tracking, and instant disease alerts—all tailored for pig and poultry farms."
-          image="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop"
-          reverse
-          gradient="from-blue-50 to-indigo-50"
-          features={[
-            "AI-powered risk assessment based on local conditions",
-            "Interactive multilingual training modules",
-            "Automated compliance tracking and reporting",
-            "Real-time disease outbreak alerts and notifications"
-          ]}
+          title="Our Smart Solution"
+          description="SwarnBhoomi delivers AI-powered crop health monitoring, irrigation guidance, weather predictions, and market analysis in one place."
+          image="https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=600&h=400&fit=crop"
+          gradient="from-green-50 to-teal-50"
         />
 
         <ParallaxSection />
 
-        {/* Key Features Section */}
-        <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-br from-gray-50 to-blue-50">
-          <div className="container mx-auto">
-            <div className="text-center mb-10 sm:mb-16">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
-                Everything You Need for Farm Biosecurity
-              </h2>
-              <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4">
-                Comprehensive tools designed specifically for pig and poultry farmers
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-              <FeatureCard
-                icon={ClipboardCheck}
-                title="Risk Assessment Tools"
-                description="Evaluate biosecurity risks specific to your farm location, livestock type, and local disease patterns."
-                gradient="from-red-500 to-pink-500"
-              />
-              <FeatureCard
-                icon={BookOpen}
-                title="Training & Guidelines"
-                description="Access expert-created training modules in multiple languages covering all biosecurity best practices."
-                gradient="from-blue-500 to-cyan-500"
-              />
-              <FeatureCard
-                icon={FileText}
-                title="Compliance Tracking"
-                description="Track regulatory requirements and work toward disease-free compartment recognition with ease."
-                gradient="from-green-500 to-teal-500"
-              />
-              <FeatureCard
-                icon={Bell}
-                title="Real-Time Alerts"
-                description="Get instant notifications about disease outbreaks, biosecurity breaches, and regulatory updates."
-                gradient="from-orange-500 to-yellow-500"
-              />
-              <FeatureCard
-                icon={BarChart3}
-                title="Monitoring Dashboard"
-                description="Visualize your farm's biosecurity status, compliance level, and areas needing attention."
-                gradient="from-purple-500 to-indigo-500"
-              />
-              <FeatureCard
-                icon={Smartphone}
-                title="Mobile-First Design"
-                description="Access all features on your smartphone, even in remote areas with limited connectivity."
-                gradient="from-pink-500 to-rose-500"
-              />
-            </div>
-          </div>
-        </section>
-
         {/* Testimonials */}
-        <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-br from-white to-gray-50">
-          <div className="container mx-auto text-center mb-10 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
-              Trusted by Farmers Across India
+        <section className="py-20 px-6 bg-gradient-to-br from-gray-50 to-white">
+          <div className="container mx-auto text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+              What Farmers Say
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4">
-              Real stories from farmers protecting their livestock with our platform
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Thousands of farmers are achieving better yields with SwarnBhoomi
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 container mx-auto">
+          <div className="grid md:grid-cols-3 gap-8">
             <TestimonialCard
-              quote="The risk assessment tool helped me identify vulnerabilities I never knew existed. No disease outbreaks in 18 months!"
-              author="Ramesh Patil"
-              role="Poultry Farmer, Maharashtra"
+              quote="Increased my yield by 40% while saving 25% water!"
+              author="Rajesh Kumar"
+              role="Rice Farmer, Punjab"
               rating={5}
             />
             <TestimonialCard
-              quote="Real-time alerts saved my pig farm from an ASF outbreak nearby. I took preventive action immediately."
-              author="Lakshmi Reddy"
-              role="Pig Farmer, Andhra Pradesh"
+              quote="Weather predictions saved my crops from frost."
+              author="Priya Sharma"
+              role="Wheat Farmer, Haryana"
               rating={5}
             />
             <TestimonialCard
-              quote="The multilingual training in Telugu made it so easy to train my workers on proper biosecurity protocols."
-              author="Suresh Kumar"
-              role="Small-scale Farmer, Telangana"
+              quote="Market insights helped me sell at the right time."
+              author="Amit Patel"
+              role="Vegetable Farmer, Gujarat"
               rating={5}
             />
           </div>
@@ -525,23 +443,17 @@ const LandingPage = () => {
 
         <Section
           title="Measurable Impact"
-          description="Farmers using our platform have achieved significant reductions in disease outbreaks, improved regulatory compliance, and increased farm productivity through better biosecurity practices."
-          image="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop"
-          gradient="from-green-50 to-emerald-50"
-          features={[
-            "40% reduction in disease-related livestock losses",
-            "65% improvement in biosecurity compliance scores",
-            "Real-time data supporting policy and surveillance",
-            "Stronger collaboration across the livestock ecosystem"
-          ]}
+          description="Farmers achieved 30% less water use, 25% better yields, and higher profits through smart farming decisions."
+          image="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600&h=400&fit=crop"
+          reverse
+          gradient="from-yellow-50 to-orange-50"
         />
 
         <Section
-          title="Join the Biosecurity Revolution"
-          description="Protect your livestock, secure your livelihood, and contribute to national food security. Start your free biosecurity assessment today and join thousands of farmers building resilient, disease-free farms."
-          image="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop"
-          reverse
-          gradient="from-blue-50 to-purple-50"
+          title="Join the Agricultural Revolution"
+          description="Be part of the future of farming. Join our community and grow smarter, more profitable crops with SwarnBhoomi."
+          image="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=400&fit=crop"
+          gradient="from-green-50 to-emerald-50"
         />
       </div>
 
