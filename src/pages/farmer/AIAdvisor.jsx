@@ -11,6 +11,8 @@ export default function AIAdvisor() {
   const audioPlayerRef = useRef(null);
   const chatEndRef = useRef(null);
 
+  const BASE_URL = "https://jeevya-farm-advisory-wbhook.onrender.com";
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat]);
@@ -45,7 +47,7 @@ export default function AIAdvisor() {
     const reader = new FileReader();
     reader.onloadend = async () => {
       const base64Audio = reader.result.split(",")[1];
-      const res = await fetch("http://localhost:5001/transcribe", {
+      const res = await fetch(`${BASE_URL}/transcribe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ audioBase64: base64Audio, languageCode: "en-IN" }),
@@ -66,17 +68,23 @@ export default function AIAdvisor() {
     setIsTyping(true);
 
     try {
-      const res = await fetch("http://localhost:5000/gemini", {
+      const res = await fetch(`${BASE_URL}/webhook`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: message }),
       });
       const data = await res.json();
       setIsTyping(false);
-      if (data.answer) {
+
+      if (data.reply || data.answer) {
         setChat((prev) => [
           ...prev,
-          { sender: "ai", text: data.answer, feedback: null, timestamp: new Date() },
+          {
+            sender: "ai",
+            text: data.reply || data.answer,
+            feedback: null,
+            timestamp: new Date(),
+          },
         ]);
       }
     } catch (error) {
@@ -98,7 +106,7 @@ export default function AIAdvisor() {
       audioPlayerRef.current.pause();
       audioPlayerRef.current = null;
     }
-    const res = await fetch("http://localhost:5001/speak", {
+    const res = await fetch(`${BASE_URL}/speak`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, languageCode: "en-IN" }),
@@ -113,9 +121,7 @@ export default function AIAdvisor() {
 
   const handleFeedback = (index, value) => {
     setChat((prev) =>
-      prev.map((msg, i) =>
-        i === index ? { ...msg, feedback: value } : msg
-      )
+      prev.map((msg, i) => (i === index ? { ...msg, feedback: value } : msg))
     );
   };
 
@@ -127,11 +133,9 @@ export default function AIAdvisor() {
   };
 
   return (
-    <div className="flex flex-col h-[93vh] font-poppins overflow-hidden ">
- 
-
+    <div className="flex flex-col h-[93vh] font-poppins overflow-hidden">
       {/* Chat Area */}
-      <main className="flex-1 px-4 sm:px-6 py-4 sm:py-6 space-y-4 overflow-hidden">
+      <main className="flex-1 px-4 sm:px-6 py-4 sm:py-6 space-y-4 overflow-y-auto">
         {chat.length === 0 && (
           <div className="flex flex-col items-center justify-center text-center mt-10 sm:mt-16">
             <div className="bg-white rounded-full p-6 shadow-md mb-3">
@@ -141,110 +145,49 @@ export default function AIAdvisor() {
               Welcome to Biosecurity Advisor!
             </h2>
             <p className="text-gray-500 text-sm sm:text-base max-w-sm">
-              Ask me about farm safety, disease prevention, or biosecurity best
-              practices. You can type or speak your question.
+              Ask me about farm safety, disease prevention, or biosecurity best practices. You can type or speak your question.
             </p>
           </div>
         )}
 
         {chat.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`flex max-w-[85%] sm:max-w-[70%] ${
-                msg.sender === "user" ? "flex-row-reverse" : "flex-row"
-              }`}
-            >
+          <div key={idx} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
+            <div className={`flex max-w-[85%] sm:max-w-[70%] ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}>
               <div className={`flex-shrink-0 ${msg.sender === "user" ? "ml-2" : "mr-2"}`}>
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${
-                    msg.sender === "user" ? "bg-green-600" : "bg-blue-600"
-                  }`}
-                >
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${msg.sender === "user" ? "bg-green-600" : "bg-blue-600"}`}>
                   {msg.sender === "user" ? "👤" : "🤖"}
                 </div>
               </div>
 
               <div className="flex flex-col">
-                <div
-                  className={`px-4 py-3 rounded-2xl shadow-sm ${
-                    msg.sender === "user"
-                      ? "bg-green-600 text-white rounded-br-md"
-                      : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
-                  }`}
-                >
+                <div className={`px-4 py-3 rounded-2xl shadow-sm ${msg.sender === "user" ? "bg-green-600 text-white rounded-br-md" : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"}`}>
                   <p className="text-sm leading-relaxed break-words">{msg.text}</p>
                 </div>
 
-                {/* Feedback + Audio */}
                 {msg.sender === "ai" && (
                   <div className="flex items-center mt-2 space-x-2">
-                    <button
-                      onClick={() => speakText(msg.text)}
-                      className="p-1 text-gray-600 hover:text-green-600 transition"
-                      title="Listen to response"
-                    >
-                      🔊
-                    </button>
-                    <button
-                      onClick={() => handleFeedback(idx, "up")}
-                      className={`p-1 ${
-                        msg.feedback === "up"
-                          ? "text-green-600"
-                          : "text-gray-400 hover:text-green-600"
-                      }`}
-                      title="Good response"
-                    >
-                      👍
-                    </button>
-                    <button
-                      onClick={() => handleFeedback(idx, "down")}
-                      className={`p-1 ${
-                        msg.feedback === "down"
-                          ? "text-red-600"
-                          : "text-gray-400 hover:text-red-600"
-                      }`}
-                      title="Poor response"
-                    >
-                      👎
-                    </button>
+                    <button onClick={() => speakText(msg.text)} className="p-1 text-gray-600 hover:text-green-600 transition" title="Listen to response">🔊</button>
+                    <button onClick={() => handleFeedback(idx, "up")} className={`p-1 ${msg.feedback === "up" ? "text-green-600" : "text-gray-400 hover:text-green-600"}`} title="Good response">👍</button>
+                    <button onClick={() => handleFeedback(idx, "down")} className={`p-1 ${msg.feedback === "down" ? "text-red-600" : "text-gray-400 hover:text-red-600"}`} title="Poor response">👎</button>
                   </div>
                 )}
 
-                <div
-                  className={`text-[11px] text-gray-400 mt-1 ${
-                    msg.sender === "user" ? "text-right" : "text-left"
-                  }`}
-                >
-                  {msg.timestamp?.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                <div className={`text-[11px] text-gray-400 mt-1 ${msg.sender === "user" ? "text-right" : "text-left"}`}>
+                  {msg.timestamp?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </div>
               </div>
             </div>
           </div>
         ))}
 
-        {/* Typing Indicator */}
         {isTyping && (
           <div className="flex justify-start items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white">
-              🤖
-            </div>
+            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white">🤖</div>
             <div className="bg-white border border-gray-200 rounded-2xl px-4 py-2 shadow-sm">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.1s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
               </div>
             </div>
           </div>
@@ -255,19 +198,13 @@ export default function AIAdvisor() {
       {/* Input Section */}
       <footer className="bg-white border-t border-gray-200 px-3 sm:px-6 py-3 sm:py-4 shadow-sm">
         <div className="max-w-4xl mx-auto">
-          {/* Status messages */}
           {recording && (
-            <div className="bg-red-50 border border-red-200 rounded-md px-3 py-2 mb-2 text-center text-red-600 text-sm">
-              🔴 Recording... Click stop when done
-            </div>
+            <div className="bg-red-50 border border-red-200 rounded-md px-3 py-2 mb-2 text-center text-red-600 text-sm">🔴 Recording... Click stop when done</div>
           )}
           {audioBlob && !recording && (
-            <div className="bg-blue-50 border border-blue-200 rounded-md px-3 py-2 mb-2 text-center text-blue-600 text-sm">
-              🎧 Audio recorded! Click transcribe to convert to text
-            </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-md px-3 py-2 mb-2 text-center text-blue-600 text-sm">🎧 Audio recorded! Click transcribe to convert to text</div>
           )}
 
-          {/* Input & Buttons */}
           <div className="flex flex-col sm:flex-row gap-2">
             <textarea
               rows={1}
@@ -282,9 +219,7 @@ export default function AIAdvisor() {
               <button
                 onClick={recording ? stopRecording : startRecording}
                 className={`px-3 py-2 rounded-lg font-semibold text-xs sm:text-sm shadow-sm transition ${
-                  recording
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-yellow-500 text-white hover:bg-yellow-600"
+                  recording ? "bg-red-500 text-white hover:bg-red-600" : "bg-yellow-500 text-white hover:bg-yellow-600"
                 }`}
               >
                 {recording ? "🛑 Stop" : "🎤 Speak"}
@@ -302,9 +237,7 @@ export default function AIAdvisor() {
               <button
                 onClick={() => handleSendMessage(inputText)}
                 className={`px-3 py-2 rounded-lg font-semibold text-xs sm:text-sm shadow-sm transition ${
-                  inputText.trim()
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  inputText.trim() ? "bg-green-600 text-white hover:bg-green-700" : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
                 disabled={!inputText.trim()}
               >

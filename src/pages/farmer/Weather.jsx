@@ -32,7 +32,6 @@ const Weather = () => {
         setForecast(data.forecast.forecastday);
         generateAdvice(data);
 
-        // Save to localStorage with timestamp
         const cacheData = {
           timestamp: Date.now(),
           data,
@@ -40,7 +39,6 @@ const Weather = () => {
         };
         localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 
-        // Optional: auto-delete cache after expiry
         setTimeout(() => {
           localStorage.removeItem(CACHE_KEY);
         }, CACHE_EXPIRY_MINUTES * 60 * 1000);
@@ -56,12 +54,12 @@ const Weather = () => {
 
       if (today.day.daily_will_it_rain) {
         adviceMsg =
-          "Rain expected today. Avoid spraying pesticides and plan irrigation.";
+          "🌧️ Rain expected today. Avoid spraying pesticides and plan irrigation.";
       }
 
       for (let day of data.forecast.forecastday) {
         if (day.day.condition.text.toLowerCase().includes("storm")) {
-          alertMsg = `Severe storm expected on ${day.date}. Take precautions!`;
+          alertMsg = `⚠️ Severe storm expected on ${day.date}. Take precautions!`;
           break;
         }
       }
@@ -87,7 +85,6 @@ const Weather = () => {
           const city = userData.district || "Delhi";
           setLocation(`${userData.district}, ${userData.state}`);
 
-          // Check for cached data
           const cached = localStorage.getItem(CACHE_KEY);
           if (cached) {
             const parsed = JSON.parse(cached);
@@ -105,7 +102,6 @@ const Weather = () => {
             }
           }
 
-          // If not cached or expired
           await fetchWeather(city);
         } else {
           setLocation("Unknown");
@@ -123,40 +119,42 @@ const Weather = () => {
 
   if (loading) {
     return (
-      <div className="p-8 text-center text-xl font-semibold text-gray-600">
-        Fetching data...
+      <div className="p-8 text-center text-xl font-semibold text-gray-600 animate-pulse">
+        Fetching weather data...
       </div>
     );
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] py-4 px-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-center text-gray-800 mb-8">
+    <div className="min-h-[calc(100vh-64px)] py-4 px-3 sm:px-6 bg-gradient-to-br from-blue-50 to-blue-100">
+      <div className="max-w-5xl mx-auto space-y-8">
+        {/* Location Header */}
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-center text-blue-800">
           {location}
         </h1>
 
-        {/* Current Weather + Advice */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white border p-6 shadow-md hover:shadow-xl transition-transform transform hover:scale-105">
-            <h2 className="text-2xl font-bold text-blue-700 mb-4 text-center">
+        {/* Current Weather & Advice */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Current Weather */}
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-blue-100 hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl font-semibold text-blue-700 mb-4 text-center">
               Current Weather
             </h2>
-            <div className="flex items-center justify-center gap-6">
-              <CloudSun className="h-20 w-20 text-yellow-500" />
-              <div className="space-y-2 text-lg font-medium">
-                <p className="text-2xl text-gray-800 font-semibold">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <CloudSun className="h-20 w-20 text-yellow-500 drop-shadow-md" />
+              <div className="space-y-2 text-lg font-medium text-center sm:text-left">
+                <p className="text-2xl font-bold text-gray-800">
                   {weatherData?.condition.text}
                 </p>
-                <p className="text-gray-600 flex items-center">
+                <p className="text-gray-600 flex items-center justify-center sm:justify-start">
                   <Thermometer className="h-5 w-5 mr-2 text-red-500" />
                   {weatherData?.temp_c}°C
                 </p>
-                <p className="text-gray-600 flex items-center">
+                <p className="text-gray-600 flex items-center justify-center sm:justify-start">
                   <Droplet className="h-5 w-5 mr-2 text-blue-500" />
                   {weatherData?.humidity}%
                 </p>
-                <p className="text-gray-600 flex items-center">
+                <p className="text-gray-600 flex items-center justify-center sm:justify-start">
                   <Wind className="h-5 w-5 mr-2 text-gray-700" />
                   {weatherData?.wind_kph} km/h
                 </p>
@@ -164,54 +162,82 @@ const Weather = () => {
             </div>
           </div>
 
-          {/* Advice and Alert */}
-          <div className="bg-white border p-4 shadow-md hover:shadow-xl transition-transform transform hover:scale-105 text-center">
-            <h2 className="text-2xl font-bold text-blue-700 mb-4">
+          {/* Advice Section */}
+          <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-blue-100 text-center hover:shadow-xl transition-all duration-300">
+            <h2 className="text-xl sm:text-2xl font-semibold text-blue-700 mb-3">
               Weather Advice
             </h2>
-            <p className="text-gray-700 text-lg font-medium">{advice}</p>
+            <p className="text-gray-700 text-lg font-medium leading-relaxed">
+              {advice}
+            </p>
+
             {alert && (
-              <div className="mt-6 bg-red-100 text-red-700 p-4 rounded-xl flex items-center justify-center shadow-sm">
-                <AlertCircle className="h-6 w-6 mr-2" />
-                <span className="font-semibold">{alert}</span>
+              <div className="mt-6 bg-red-100 border border-red-300 text-red-700 p-3 rounded-xl flex items-center justify-center gap-2 shadow-sm">
+                <AlertCircle className="h-6 w-6 flex-shrink-0" />
+                <span className="font-semibold text-sm sm:text-base">{alert}</span>
               </div>
             )}
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="my-6 border-t border-gray-300" />
-
-        {/* Forecast Table */}
-        <div className="bg-white border p-6 shadow-md overflow-x-auto hover:shadow-xl transition">
+        {/* Forecast */}
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-blue-100 shadow-lg p-5 sm:p-8">
           <h2 className="text-2xl font-bold text-center text-blue-700 mb-4">
-            Weather Forecast
+            5-Day Weather Forecast
           </h2>
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-blue-100 text-gray-700">
-                <th className="p-3">Date</th>
-                <th className="p-3">Condition</th>
-                <th className="p-3">Temp (°C)</th>
-                <th className="p-3">Humidity</th>
-                <th className="p-3">Wind</th>
-              </tr>
-            </thead>
-            <tbody>
-              {forecast.map((day, idx) => (
-                <tr
-                  key={idx}
-                  className="hover:bg-blue-50 text-gray-800 font-medium"
-                >
-                  <td className="p-3">{day.date}</td>
-                  <td className="p-3">{day.day.condition.text}</td>
-                  <td className="p-3 text-blue-600">{day.day.avgtemp_c}°C</td>
-                  <td className="p-3 text-green-600">{day.day.avghumidity}%</td>
-                  <td className="p-3 text-gray-700">{day.day.maxwind_kph} km/h</td>
+
+          {/* Mobile Card Layout */}
+          <div className="block sm:hidden space-y-4">
+            {forecast.map((day, idx) => (
+              <div
+                key={idx}
+                className="p-4 bg-blue-50 rounded-xl shadow-sm border border-blue-100"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <p className="font-semibold text-gray-800">{day.date}</p>
+                  <p className="text-sm text-blue-700 font-medium">
+                    {day.day.condition.text}
+                  </p>
+                </div>
+                <div className="flex justify-around text-sm text-gray-700">
+                  <span>🌡 {day.day.avgtemp_c}°C</span>
+                  <span>💧 {day.day.avghumidity}%</span>
+                  <span>🌬 {day.day.maxwind_kph} km/h</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table Layout */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-blue-100 text-gray-700 text-sm">
+                  <th className="p-3">Date</th>
+                  <th className="p-3">Condition</th>
+                  <th className="p-3">Temp (°C)</th>
+                  <th className="p-3">Humidity</th>
+                  <th className="p-3">Wind</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {forecast.map((day, idx) => (
+                  <tr
+                    key={idx}
+                    className="hover:bg-blue-50 text-gray-800 font-medium transition"
+                  >
+                    <td className="p-3">{day.date}</td>
+                    <td className="p-3">{day.day.condition.text}</td>
+                    <td className="p-3 text-blue-600">{day.day.avgtemp_c}°C</td>
+                    <td className="p-3 text-green-600">{day.day.avghumidity}%</td>
+                    <td className="p-3 text-gray-700">
+                      {day.day.maxwind_kph} km/h
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
