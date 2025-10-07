@@ -1,15 +1,4 @@
 import React from "react";
-import {
-  ShieldCheck,
-  AlertTriangle,
-  ThermometerSun,
-  Droplet,
-  Users,
-  Leaf,
-  Star,
-  Globe,
-  Activity,
-} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -25,10 +14,10 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gradient-to-b from-green-100 via-emerald-50 to-white text-gray-800 min-h-screen overflow-hidden">
+    <div className="bg-gradient-to-b from-green-100 via-emerald-50 to-white text-gray-800 min-h-screen overflow-hidden flex flex-col justify-between">
       {/* ---------- HERO SECTION ---------- */}
-      <section className="relative h-screen flex flex-col justify-center items-center text-center overflow-hidden">
-        {/* Background Gradient (Lighter tones) */}
+      <section className="relative flex flex-col justify-center items-center text-center h-screen px-6 overflow-hidden">
+        {/* Background Gradient */}
         <motion.div
           className="absolute inset-0 bg-gradient-to-br from-green-200 via-emerald-100 to-blue-100"
           animate={{ backgroundPosition: ["0% 0%", "100% 100%"] }}
@@ -39,34 +28,29 @@ const LandingPage = () => {
         {/* Subtle texture */}
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/soft-wallpaper.png')]"></div>
 
-        {/* Hero content */}
+        {/* Hero Content */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="relative z-10 flex flex-col items-center justify-center px-6"
+          className="relative z-10 flex flex-col items-center justify-center"
         >
           {/* Logo */}
           <motion.img
             src="/assets/jeevya-logo.png"
             alt="Jeevya Logo"
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="w-64 sm:w-80 md:w-96 lg:w-[28rem] mb-6 drop-shadow-2xl select-none"
+            transition={{ duration: 1 }}
+            className="w-56 sm:w-72 md:w-96 lg:w-[28rem] mb-4 drop-shadow-2xl select-none"
           />
 
-          {/* Heading (visible on desktop only) */}
-          <h1 className="hidden md:block text-5xl lg:text-6xl font-extrabold text-green-900 mb-3 leading-tight drop-shadow-sm">
-            Jeevya
-          </h1>
-
-          {/* Tagline (simple + short) */}
-          <p className="hidden md:block text-lg text-gray-700 mb-8">
-            Smart Farm Intelligence for a Healthier Tomorrow
+          {/* Tagline - Desktop */}
+          <p className="hidden md:block text-2xl font-extrabold text-green-900 mb-8 tracking-wide drop-shadow-sm">
+            Farm Management Meets Biosecurity Intelligence
           </p>
 
-          {/* Buttons (visible only on desktop view) */}
+          {/* Buttons - Desktop */}
           <div className="hidden sm:flex justify-center gap-4">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -81,10 +65,27 @@ const LandingPage = () => {
             </button>
           </div>
 
-          {/* Splash feel for mobile (logo only, minimal text) */}
-          <p className="md:hidden mt-4 text-green-800 font-semibold tracking-wide text-lg">
-            Smart Farm Intelligence
-          </p>
+          {/* ---------- MOBILE VIEW ---------- */}
+          <div className="flex flex-col items-center md:hidden mt-4 space-y-4">
+            {/* Tagline */}
+            <p className="text-green-900 font-extrabold text-xl tracking-wide text-center drop-shadow-sm">
+              Smart Biosecurity & Farm Management
+            </p>
+            <p className="text-sm text-gray-600 max-w-xs leading-snug text-center">
+              Empowering farmers with real-time disease prevention, digital
+              monitoring & intelligent insights.
+            </p>
+
+            {/* Mobile Get Started Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate("/auth")}
+              className="mt-3 bg-green-600 text-white px-8 py-3 rounded-full font-semibold shadow-md hover:bg-green-700 transition-all"
+            >
+              Get Started →
+            </motion.button>
+          </div>
         </motion.div>
       </section>
 

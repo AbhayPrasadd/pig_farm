@@ -42,20 +42,7 @@ const AuthPage = ({ setUser }) => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-emerald-50 to-white px-4">
       {/* Login Card */}
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-green-100">
-        {/* Logo & Branding */}
-        <div className="text-center mb-8">
-          <img
-            src="/assets/jeevya-logo.png"
-            alt="Jeevya Logo"
-            className="w-40 mx-auto mb-4 drop-shadow-md"
-          />
-          <h1 className="text-3xl font-extrabold text-green-800 tracking-wide">
-            Jeevya
-          </h1>
-          <p className="text-green-600 text-sm font-medium">
-            Smart Farm Intelligence
-          </p>
-        </div>
+      
 
         {/* Title */}
         <div className="text-center mb-6">
