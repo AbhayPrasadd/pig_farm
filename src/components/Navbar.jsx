@@ -16,20 +16,35 @@ const Navbar = ({ setIsSidebarOpen }) => {
       <Toaster position="top-right" />
       <nav className="fixed top-0 left-0 w-full h-16 bg-green-900 shadow-md z-40 px-4 sm:px-6">
         <div className="flex items-center justify-between h-full">
-          {/* Left: Hamburger + Logo */}
+          {/* Left: Hamburger + Jeevya Logo */}
           <div className="flex items-center gap-3">
+            {/* Sidebar Toggle Button (Mobile) */}
             <button
               className="text-white p-2 md:hidden hover:bg-white/10 rounded-full"
               onClick={() => setIsSidebarOpen(true)}
             >
               <Menu className="h-6 w-6" />
             </button>
-            <img src="/swarnbhoomi-logo.png" alt="Logo" className="h-16 w-auto hidden sm:block" />
+
+            {/* ✅ Jeevya Logo + Text */}
+            <div
+              className="flex items-center gap-2 select-none cursor-pointer group"
+              onClick={() => navigate("/dashboard")}
+            >
+              <img
+                src="/assets/jeevya-logo.png"
+                alt="Jeevya Logo"
+                className="h-10 w-auto sm:h-12 drop-shadow-lg brightness-110 group-hover:scale-105 transition-transform duration-300"
+              />
+              <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-wide drop-shadow-md group-hover:text-green-200 transition-colors duration-300">
+                JEEVYA
+              </h1>
+            </div>
           </div>
 
-          {/* Right: Bell + Avatar */}
+          {/* Right: Notifications + Avatar */}
           <div className="flex items-center gap-3">
-            {/* Notification Icon */}
+            {/* 🔔 Notifications */}
             <div className="relative">
               <button
                 className="text-white p-2 hover:bg-white/10 rounded-full"
@@ -37,10 +52,13 @@ const Navbar = ({ setIsSidebarOpen }) => {
               >
                 <Bell className="h-6 w-6" />
               </button>
+
               {notifOpen && (
                 <div className="absolute right-0 mt-2 w-80 max-h-[400px] overflow-auto bg-white rounded-xl shadow-2xl p-4 z-50 animate-fade-in">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-lg font-bold text-gray-800">🔔 Notifications</h4>
+                    <h4 className="text-lg font-bold text-gray-800">
+                      🔔 Notifications
+                    </h4>
                     <button
                       onClick={() => setNotifications([])}
                       className="text-sm text-red-600 hover:underline"
@@ -48,6 +66,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
                       Clear All
                     </button>
                   </div>
+
                   {notifications.length > 0 ? (
                     <ul className="space-y-3">
                       {notifications.map((n, i) => (
@@ -68,15 +87,16 @@ const Navbar = ({ setIsSidebarOpen }) => {
               )}
             </div>
 
-            {/* Avatar Dropdown */}
+            {/* 👤 Avatar Dropdown */}
             <div className="relative">
               <button onClick={() => setAvatarOpen(!avatarOpen)}>
                 <img
                   src="https://api.dicebear.com/7.x/initials/svg?seed=U"
                   alt="Avatar"
-                  className="h-9 w-9 rounded-full border-2 border-white shadow"
+                  className="h-9 w-9 rounded-full border-2 border-white shadow hover:scale-105 transition-transform duration-200"
                 />
               </button>
+
               {avatarOpen && (
                 <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-xl z-50">
                   <ul className="py-2 text-sm text-gray-700">

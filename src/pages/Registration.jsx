@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase.js";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { User, Mail, Lock, Phone, MapPin, ArrowRight, Loader2 } from "lucide-react";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -17,9 +18,10 @@ const Registration = () => {
     village: "",
     pincode: "",
     gender: "",
-    role: "farmer", // default role
+    role: "farmer",
   });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,83 +30,109 @@ const Registration = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     try {
-      // 1️⃣ Create user in Firebase Auth
       const { user } = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
 
-      // 2️⃣ Save user profile in Firestore
       await setDoc(doc(db, "users", user.uid), {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        language: formData.language,
-        state: formData.state,
-        district: formData.district,
-        village: formData.village,
-        pincode: formData.pincode,
-        gender: formData.gender,
-        role: formData.role,
+        ...formData,
         profileCompleted: false,
         createdAt: serverTimestamp(),
       });
 
-      // 3️⃣ Redirect to dashboard or profile setup
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setError("Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold mb-4 text-center text-green-700">
-          Register
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-emerald-50 to-white px-4 py-8">
+      <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-green-100">
+      
 
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-1">
+            Create Your Account
+          </h2>
+          <p className="text-gray-500 text-sm">
+            Fill in the details to get started
+          </p>
+        </div>
 
-        <form className="space-y-3" onSubmit={handleRegister}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            className="w-full p-2 border rounded"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            className="w-full p-2 border rounded"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="w-full p-2 border rounded"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone Number"
-            className="w-full p-2 border rounded"
-            onChange={handleChange}
-            required
-          />
+        {/* Error */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg text-center">
+            {error}
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleRegister} className="space-y-4">
+          {/* Name */}
+          <div className="relative">
+            <User className="absolute left-4 top-3.5 text-green-700 h-5 w-5" />
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-green-200 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Email */}
+          <div className="relative">
+            <Mail className="absolute left-4 top-3.5 text-green-700 h-5 w-5" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-green-200 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Password */}
+          <div className="relative">
+            <Lock className="absolute left-4 top-3.5 text-green-700 h-5 w-5" />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-green-200 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Phone */}
+          <div className="relative">
+            <Phone className="absolute left-4 top-3.5 text-green-700 h-5 w-5" />
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Phone Number"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-green-200 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Language */}
           <select
             name="language"
-            className="w-full p-2 border rounded"
+            className="w-full p-3 border border-green-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
             onChange={handleChange}
             required
           >
@@ -113,43 +141,52 @@ const Registration = () => {
             <option value="English">English</option>
             <option value="Bengali">Bengali</option>
             <option value="Telugu">Telugu</option>
-            {/* Add more languages */}
+            <option value="Marathi">Marathi</option>
           </select>
-          <input
-            type="text"
-            name="state"
-            placeholder="State"
-            className="w-full p-2 border rounded"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="district"
-            placeholder="District"
-            className="w-full p-2 border rounded"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="village"
-            placeholder="Village"
-            className="w-full p-2 border rounded"
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="pincode"
-            placeholder="Pincode"
-            className="w-full p-2 border rounded"
-            onChange={handleChange}
-            required
-          />
+
+          {/* Address Details */}
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              type="text"
+              name="state"
+              placeholder="State"
+              className="p-3 border border-green-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="district"
+              placeholder="District"
+              className="p-3 border border-green-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              type="text"
+              name="village"
+              placeholder="Village"
+              className="p-3 border border-green-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="pincode"
+              placeholder="Pincode"
+              className="p-3 border border-green-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Gender */}
           <select
             name="gender"
-            className="w-full p-2 border rounded"
+            className="w-full p-3 border border-green-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
             onChange={handleChange}
             required
           >
@@ -159,9 +196,10 @@ const Registration = () => {
             <option value="Other">Other</option>
           </select>
 
+          {/* Role */}
           <select
             name="role"
-            className="w-full p-2 border rounded"
+            className="w-full p-3 border border-green-200 rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all"
             onChange={handleChange}
             required
           >
@@ -170,23 +208,42 @@ const Registration = () => {
             <option value="admin">Admin</option>
           </select>
 
+          {/* Register Button */}
           <button
             type="submit"
-            className="w-full bg-green-600 text-white p-2 rounded-lg hover:bg-green-700"
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-3 rounded-xl font-semibold text-lg shadow-lg hover:shadow-green-300 transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Register
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin h-5 w-5 mr-2" /> Creating Account...
+              </>
+            ) : (
+              <>
+                Register
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </>
+            )}
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-center">
-          Already have an account?{" "}
+        {/* Login Link */}
+        <p className="mt-6 text-sm text-center text-gray-600">
+          Already have an account?
           <span
-            className="text-green-600 cursor-pointer ml-1"
             onClick={() => navigate("/auth")}
+            className="text-green-700 hover:text-green-900 font-semibold cursor-pointer ml-1"
           >
             Login
           </span>
         </p>
+
+        {/* Footer */}
+        <div className="text-center mt-6 border-t border-gray-100 pt-4">
+          <p className="text-gray-400 text-xs">
+            © {new Date().getFullYear()} Jeevya. All rights reserved.
+          </p>
+        </div>
       </div>
     </div>
   );
