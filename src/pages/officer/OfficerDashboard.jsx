@@ -3,12 +3,10 @@ import { Link } from "react-router-dom";
 import { db, auth } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import {
-  Bell,
-  Users,
+  MapPin,
   BarChart3,
-  BookOpen,
-  Database,
-  MessageSquare,
+  Bell,
+  FileText,
 } from "lucide-react";
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/600.css";
@@ -42,64 +40,61 @@ const OfficerDashboard = () => {
   }
 
   return (
-    <div className="px-4 py-6 sm:px-8 bg-gradient-to-br min-h-screen font-poppins text-gray-800">
+    <div className="px-4 py-6 sm:px-8 bg-gray-50 min-h-screen font-poppins text-gray-800">
       <div className="max-w-7xl mx-auto">
         {/* Officer Info */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-green-800">
+            <h1 className="text-3xl font-extrabold text-gray-800">
               Welcome, {officerData?.name || "Officer"} 👋
             </h1>
-            <p className="text-base text-gray-700">
-              {officerData?.designation || "Agriculture Officer"}
+            <p className="text-base text-gray-600">
+              {officerData?.designation || "Biosecurity Officer"}
             </p>
           </div>
         </div>
 
-        {/* Officer Quick Stats */}
+        {/* Quick Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-          <QuickStat label="Farmers Managed" value={officerData?.farmersCount || 0} />
-          <QuickStat label="Active Alerts" value={officerData?.activeAlerts || 0} />
-          <QuickStat label="Reports Generated" value={officerData?.reportsCount || 0} />
+          <QuickStat
+            label="Farms Managed"
+            value={officerData?.farmersCount || 0}
+          />
+          <QuickStat
+            label="Active Alerts"
+            value={officerData?.activeAlerts || 0}
+          />
+          <QuickStat
+            label="Reports Generated"
+            value={officerData?.reportsCount || 0}
+          />
         </div>
 
         {/* Cards Section */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <Card
+            to="/dashboard/risk-map"
+            icon={<MapPin className="text-red-600" />}
+            title="Regional Risk Map"
+            subtitle="Visualize farm risk zones"
+          />
+          <Card
+            to="/dashboard/compliance-analytics"
+            icon={<BarChart3 className="text-blue-600" />}
+            title="Compliance Analytics"
+            subtitle="View trends and metrics"
+          />
           <Card
             to="/dashboard/advisory-management"
-            icon={<Users className="text-green-700" />}
+            icon={<Bell className="text-yellow-500" />}
             title="Advisory Management"
-            subtitle="Create and send advisories to farmers"
+            subtitle="Send alerts and advisories"
           />
           <Card
-            to="/dashboard/alerts"
-            icon={<Bell className="text-red-500" />}
-            title="Alerts"
-            subtitle="Manage weather & pest alerts"
-          />
-          <Card
-            to="/dashboard/crop-data"
-            icon={<Database className="text-blue-600" />}
-            title="Crop Data"
-            subtitle="Update and monitor crop statistics"
-          />
-          <Card
-            to="/dashboard/farmer-queries"
-            icon={<MessageSquare className="text-purple-600" />}
-            title="Farmer Queries"
-            subtitle="Answer farmers' questions"
-          />
-          <Card
-            to="/dashboard/knowledge-base"
-            icon={<BookOpen className="text-indigo-600" />}
-            title="Knowledge Base"
-            subtitle="Access guidelines & resources"
-          />
-          <Card
-            to="/dashboard/reports-analytics"
-            icon={<BarChart3 className="text-yellow-500" />}
-            title="Reports & Analytics"
-            subtitle="View analytics & generate reports"
+            to="/dashboard/compliance-repository"
+            icon={<FileText className="text-green-600" />}
+            title="Compliance Repository"
+            subtitle="Access reports & archives"
           />
         </div>
       </div>
@@ -109,7 +104,7 @@ const OfficerDashboard = () => {
 
 const QuickStat = ({ label, value }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-md shadow p-4 text-center">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5 text-center">
       <h3 className="text-2xl font-bold text-green-700">{value}</h3>
       <p className="text-sm text-gray-600">{label}</p>
     </div>
@@ -120,13 +115,13 @@ const Card = ({ to, icon, title, subtitle }) => {
   return (
     <Link
       to={to}
-      className="bg-white border border-gray-300 p-5 rounded-md shadow hover:shadow-md transition-all flex flex-col gap-3 text-center items-center hover:border-green-400"
+      className="bg-white border border-gray-200 rounded-xl p-6 shadow hover:shadow-md transition-all flex flex-col items-center text-center hover:border-blue-400"
     >
-      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-green-50">
+      <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-50 mb-3">
         {icon}
       </div>
-      <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-      <p className="text-sm text-gray-600 leading-snug">{subtitle}</p>
+      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
     </Link>
   );
 };

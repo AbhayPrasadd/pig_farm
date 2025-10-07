@@ -1,51 +1,60 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   ShieldCheck,
   AlertTriangle,
   ThermometerSun,
   Droplet,
   Users,
-  ArrowRight,
   Leaf,
-  CheckCircle,
   Star,
   Globe,
   Activity,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-/* ---------------- Reusable Glass Card ---------------- */
+/* ---------- Reusable Glass Card ---------- */
 const GlassCard = ({ children, className = "" }) => (
-  <div
-    className={`backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-2xl ${className}`}
+  <motion.div
+    whileHover={{ scale: 1.02 }}
+    className={`backdrop-blur-lg bg-white/20 border border-white/30 rounded-2xl shadow-xl transition-all duration-500 ${className}`}
   >
     {children}
-  </div>
+  </motion.div>
 );
 
-/* ---------------- Feature Card ---------------- */
+/* ---------- Feature Card ---------- */
 const FeatureCard = ({ icon: Icon, title, description, color }) => (
-  <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border border-gray-100">
+  <motion.div
+    initial={{ opacity: 0, y: 60 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, ease: "easeOut" }}
+    viewport={{ once: true }}
+    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 p-6 border border-gray-100 transform hover:-translate-y-2"
+  >
     <div
-      className={`w-14 h-14 flex items-center justify-center rounded-xl mb-4 bg-gradient-to-br ${color}`}
+      className={`w-14 h-14 flex items-center justify-center rounded-xl mb-4 bg-gradient-to-br ${color} shadow-md`}
     >
       <Icon className="text-white w-7 h-7" />
     </div>
     <h3 className="text-xl font-semibold text-gray-800 mb-3">{title}</h3>
     <p className="text-gray-600 leading-relaxed">{description}</p>
-  </div>
+  </motion.div>
 );
 
-/* ---------------- Stat Card ---------------- */
+/* ---------- Stat Card ---------- */
 const StatCard = ({ number, label, icon: Icon }) => (
-  <div className="bg-white/90 backdrop-blur-md border border-blue-100 rounded-2xl p-6 text-center shadow-md">
+  <motion.div
+    whileHover={{ scale: 1.05 }}
+    className="bg-white/90 backdrop-blur-md border border-green-100 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition"
+  >
     <Icon className="w-8 h-8 mx-auto mb-3 text-green-600" />
     <div className="text-3xl font-bold text-gray-800">{number}</div>
     <p className="text-gray-600 text-sm">{label}</p>
-  </div>
+  </motion.div>
 );
 
-/* ---------------- Footer ---------------- */
+/* ---------- Footer ---------- */
 const Footer = () => (
   <footer className="bg-gradient-to-br from-green-900 to-blue-900 text-white py-12 mt-20">
     <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-8">
@@ -54,8 +63,8 @@ const Footer = () => (
           <ShieldCheck className="w-8 h-8 text-green-400 mr-2" />
           <h3 className="text-2xl font-bold">AgriSafe</h3>
         </div>
-        <p className="text-gray-300">
-          Empowering farmers with digital biosecurity and disease prevention.
+        <p className="text-gray-300 leading-relaxed">
+          Empowering every farmer with smart digital safety — no tech skills needed.
         </p>
       </div>
       <div>
@@ -89,114 +98,128 @@ const Footer = () => (
   </footer>
 );
 
-/* ---------------- Landing Page ---------------- */
+/* ---------- Landing Page ---------- */
 const LandingPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 min-h-screen">
+    <div className="bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 min-h-screen overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-800 via-green-700 to-blue-900 opacity-90"></div>
-        <div className="absolute inset-0 bg-pattern opacity-20"></div>
+      <section className="relative h-screen flex flex-col justify-center items-center text-center overflow-hidden">
+        {/* Parallax Gradient Background */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-green-700 via-green-600 to-blue-700"
+          animate={{ backgroundPosition: ["0% 0%", "100% 100%"] }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+          style={{ backgroundSize: "200% 200%" }}
+        />
 
-        <div className="relative z-10 max-w-4xl mx-auto text-white">
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-            Protecting Farms, <br /> Preventing Outbreaks.
+        {/* Overlay Pattern */}
+        <div className="absolute inset-0 opacity-15 bg-[url('https://www.transparenttextures.com/patterns/green-dust-and-scratches.png')]"></div>
+
+        {/* Hero Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="relative z-10 text-white px-6"
+        >
+          <ShieldCheck className="w-16 h-16 mx-auto mb-6 text-yellow-300 drop-shadow-lg" />
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-xl">
+            Protecting Every Farm, <br /> Preventing Every Outbreak.
           </h1>
           <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-            AgriSafe is your AI-powered digital companion for farm biosecurity,
-            disease prevention, and risk monitoring.
+            AgriSafe brings smart protection — track hygiene, get voice alerts, and stay worry-free.
           </p>
+
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => navigate("/auth")}
-              className="bg-gradient-to-r from-green-500 to-green-600 text-white px-10 py-4 rounded-xl font-bold hover:from-green-600 hover:to-green-700 shadow-lg transform hover:scale-105 transition-all"
+              className="bg-gradient-to-r from-yellow-400 to-green-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg"
             >
-              Get Started
-              <ArrowRight className="w-5 h-5 inline-block ml-2" />
-            </button>
-            <button className="border border-white/40 px-10 py-4 rounded-xl font-bold text-white hover:bg-white/10 transition">
+              Get Started →
+            </motion.button>
+            <button className="border border-white/40 px-10 py-4 rounded-full font-bold text-white hover:bg-white/10 transition duration-300">
               Learn More
             </button>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Animated Scroll Down Arrow */}
+        <motion.div
+          className="absolute bottom-6 flex justify-center w-full"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-8 h-8 text-white opacity-80 drop-shadow-lg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </motion.div>
       </section>
 
       {/* Problem Section */}
       <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            The Biosecurity Challenge
-          </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="max-w-6xl mx-auto text-center"
+        >
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">The Biosecurity Challenge</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-10">
-            Farms are vulnerable to diseases like Avian Influenza and ASF.
-            Lack of monitoring, poor hygiene tracking, and limited awareness lead
-            to major losses in livestock and crops every year.
+            Farmers face invisible threats — from bird flu to swine fever — due to low awareness and poor monitoring.
           </p>
           <div className="grid md:grid-cols-3 gap-8 mt-10">
-            <FeatureCard
-              icon={AlertTriangle}
-              title="Outbreak Risk"
-              description="Farmers struggle to detect early warning signs of disease spread."
-              color="from-red-500 to-orange-500"
-            />
-            <FeatureCard
-              icon={Droplet}
-              title="Poor Sanitation Tracking"
-              description="Manual disinfection records make compliance inconsistent."
-              color="from-blue-500 to-cyan-500"
-            />
-            <FeatureCard
-              icon={Activity}
-              title="No Centralized Monitoring"
-              description="Health and inspection data is scattered across departments."
-              color="from-green-600 to-emerald-600"
-            />
+            <FeatureCard icon={AlertTriangle} title="Outbreak Risk" description="Farmers struggle to detect early disease signs." color="from-red-500 to-orange-500" />
+            <FeatureCard icon={Droplet} title="Poor Sanitation Tracking" description="Manual logs make hygiene tracking unreliable." color="from-blue-500 to-cyan-500" />
+            <FeatureCard icon={Activity} title="No Centralized Monitoring" description="Scattered data slows quick action." color="from-green-600 to-emerald-600" />
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Solution Section */}
       <section className="py-20 px-6 bg-gradient-to-br from-green-50 to-emerald-100">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            Our Smart Digital Solution
-          </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="max-w-6xl mx-auto text-center"
+        >
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Smart Digital Solution</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-10">
-            AgriSafe integrates AI, IoT, and cloud technology to automate
-            hygiene tracking, disease prediction, and compliance reporting —
-            keeping your farm healthy and your animals safe.
+            With AI, IoT sensors, and voice-enabled tools — AgriSafe keeps every farmer safe, informed, and connected.
           </p>
           <div className="grid md:grid-cols-3 gap-8 mt-10">
-            <FeatureCard
-              icon={ThermometerSun}
-              title="Real-Time Disease Alerts"
-              description="AI-driven alerts warn you before outbreaks spread."
-              color="from-yellow-500 to-orange-500"
-            />
-            <FeatureCard
-              icon={ShieldCheck}
-              title="Smart Risk Assessment"
-              description="Automated HIRA tools evaluate and reduce infection risks."
-              color="from-green-600 to-teal-600"
-            />
-            <FeatureCard
-              icon={Users}
-              title="Collaborative Compliance"
-              description="Track hygiene tasks, inspections, and approvals in one place."
-              color="from-blue-600 to-indigo-600"
-            />
+            <FeatureCard icon={ThermometerSun} title="Real-Time Disease Alerts" description="AI warns before outbreaks spread." color="from-yellow-500 to-orange-500" />
+            <FeatureCard icon={ShieldCheck} title="Smart Risk Assessment" description="AI-based evaluation of infection risk." color="from-green-600 to-teal-600" />
+            <FeatureCard icon={Users} title="Collaborative Compliance" description="One dashboard for inspections & hygiene." color="from-blue-600 to-indigo-600" />
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Impact Stats */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-10 text-gray-900">
+          <motion.h2
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-4xl font-bold mb-10 text-gray-900"
+          >
             Proven Impact
-          </h2>
+          </motion.h2>
           <div className="grid md:grid-cols-4 gap-8">
             <StatCard number="40%" label="Disease Risk Reduced" icon={ShieldCheck} />
             <StatCard number="25%" label="Less Water Used" icon={Droplet} />
@@ -209,34 +232,29 @@ const LandingPage = () => {
       {/* Testimonials */}
       <section className="py-20 px-6 bg-gradient-to-br from-blue-50 to-green-50">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-8">
-            What Farmers Say
-          </h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-8">What Farmers Say</h2>
           <div className="grid md:grid-cols-3 gap-8 mt-10">
             {[
               {
-                quote: "AgriSafe helped us avoid an outbreak this year.",
+                quote: "AgriSafe helped us stop an outbreak before it spread.",
                 author: "Ramesh Kumar",
                 role: "Poultry Farmer, Haryana",
               },
               {
-                quote: "Digital logbooks make biosecurity tracking easy.",
+                quote: "Voice alerts and easy logbook help us every day.",
                 author: "Sunita Devi",
                 role: "Pig Farmer, Bihar",
               },
               {
-                quote: "The alerts saved my livestock from infection.",
+                quote: "Now our cattle are safe, and we feel confident.",
                 author: "Ajay Singh",
                 role: "Cattle Farmer, UP",
               },
             ].map((t, idx) => (
-              <GlassCard key={idx} className="p-8 text-left bg-white/70">
+              <GlassCard key={idx} className="p-8 text-left bg-white/80">
                 <div className="flex mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-5 h-5 text-yellow-400 fill-current"
-                    />
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
                 <p className="text-gray-700 italic mb-4">"{t.quote}"</p>
@@ -248,21 +266,28 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Call to Action */}
+      {/* CTA Section */}
       <section className="py-20 px-6 bg-gradient-to-r from-green-600 to-blue-700 text-center text-white">
-        <h2 className="text-4xl font-bold mb-6">
+        <motion.h2
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl font-bold mb-6"
+        >
           Join the Biosecure Farming Revolution
-        </h2>
+        </motion.h2>
         <p className="text-lg text-white/90 mb-10 max-w-3xl mx-auto">
-          Start protecting your farm today with AgriSafe — digital tools for a
-          safer, healthier agricultural future.
+          Protect your animals. Protect your income. Join AgriSafe today — simple tools for a safe tomorrow.
         </p>
-        <button
+        <motion.button
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/auth")}
-          className="bg-white text-green-700 px-10 py-4 rounded-xl font-bold text-lg hover:bg-green-50 shadow-lg transform hover:scale-105 transition-all"
+          className="bg-white text-green-700 px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-green-50 transition-all"
         >
           Get Started Now
-        </button>
+        </motion.button>
       </section>
 
       <Footer />

@@ -20,12 +20,10 @@ const OfficerSidebar = ({ setIsSidebarOpen }) => {
  const menuItems = useMemo(
   () => [
     { name: t("Officer Dashboard"), path: "/dashboard", icon: <Home size={20} /> },
-    { name: t("Advisory Management"), path: "/dashboard/advisory-management", icon: <BookOpen size={20} /> },
-    { name: t("Alerts"), path: "/dashboard/alerts", icon: <Bell size={20} /> },
-    { name: t("Crop Data"), path: "/dashboard/crop-data", icon: <Database size={20} /> },
-    { name: t("Farmer Queries"), path: "/dashboard/farmer-queries", icon: <Users size={20} /> },
-    { name: t("Knowledge Base"), path: "/dashboard/knowledge-base", icon: <FileText size={20} /> },
-    { name: t("Report & Analytics"), path: "/dashboard/reports-analytics", icon: <BarChart size={20} /> },
+    { name: t("Risk Map"), path: "/dashboard/risk-map", icon: <BookOpen size={20} /> },
+    { name: t("Compliance Analytics"), path: "/dashboard/compliance-analytics", icon: <BarChart size={20} /> },
+    { name: t("Advisory Management"), path: "/dashboard/advisory-management", icon: <Users size={20} /> },
+    { name: t("Compliance Repository"), path: "/dashboard/compliance-repository", icon: <Database size={20} /> },
     { name: t("Profile"), path: "/dashboard/profile", icon: <User size={20} /> },
   ],
   [t]

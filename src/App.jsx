@@ -18,13 +18,13 @@ import FarmExpense from "./pages/farmer/FarmExpense";
 
 // 🧑‍💼 Officer Pages
 import OfficerDashboard from "./pages/officer/OfficerDashboard";
+import RiskMap from "./pages/officer/RiskMap";
+import ComplianceRepository from "./pages/officer/ComplianceRepository";
 import AdvisoryManagement from "./pages/officer/AdvisoryManagement";
-import AlertsOfficer from "./pages/officer/Alerts";
-import CropData from "./pages/officer/CropData";
-import FarmerQueries from "./pages/officer/FarmerQueries";
-import KnowledgeBase from "./pages/officer/KnowledgeBase";
-import ReportAnalytics from "./pages/officer/ReportAnalytics";
+import ComplianceAnalytics from "./pages/officer/ComplianceAnalytics";
 import OfficerProfile from "./pages/officer/OfficerProfile";
+// import AlertsOfficer from "./pages/officer/Alerts";
+// import KnowledgeBase from "./pages/officer/KnowledgeBase";
 
 // 🏛️ Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -41,6 +41,7 @@ import Registration from "./pages/Registration";
 
 // 🧱 Components
 import Layout from "./components/Layout";
+// import RiskMap from "./pages/officer/RiskMap";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -108,13 +109,13 @@ const App = () => {
         {role === "officer" && (
           <>
             <Route index element={<OfficerDashboard />} />
+            <Route path="risk-map" element={<RiskMap />} />
+            <Route path="compliance-repository" element={<ComplianceRepository />} />
             <Route path="advisory-management" element={<AdvisoryManagement />} />
-            <Route path="alerts" element={<AlertsOfficer />} />
-            <Route path="crop-data" element={<CropData />} />
-            <Route path="farmer-queries" element={<FarmerQueries />} />
-            <Route path="knowledge-base" element={<KnowledgeBase />} />
-            <Route path="reports-analytics" element={<ReportAnalytics />} />
+            <Route path="compliance-analytics" element={<ComplianceAnalytics />} />
             <Route path="profile" element={<OfficerProfile />} />
+            {/* <Route path="alerts" element={<AlertsOfficer />} />
+            <Route path="knowledge-base" element={<KnowledgeBase />} /> */}
           </>
         )}
 

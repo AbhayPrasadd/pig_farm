@@ -1,128 +1,56 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-
-const mockAdvisories = [
-  {
-    id: 1,
-    title: 'Irrigation Advice for Wheat - April',
-    category: 'Irrigation',
-    region: 'Bhubaneswar, Odisha',
-    crop: 'Wheat',
-    date: '2025-04-10',
-    content: 'Due to rising temperatures, irrigate wheat fields in the morning and late evening to reduce water loss. Mulching recommended.',
-  },
-  {
-    id: 2,
-    title: 'Pest Alert: Rice Blast',
-    category: 'Pest/Disease',
-    region: 'Cuttack, Odisha',
-    crop: 'Rice',
-    date: '2025-05-15',
-    content: 'Rice blast disease observed. Spray approved fungicide after sunset. Ensure proper drainage.',
-  },
-  {
-    id: 3,
-    title: 'Govt Scheme: Subsidy on Drip Irrigation',
-    category: 'Scheme',
-    region: 'Khordha, Odisha',
-    crop: 'Any',
-    date: '2025-06-01',
-    content: 'Farmers can now apply for 50% subsidy on drip irrigation systems under the state agriculture scheme. Apply at nearest block office before July.',
-  }
-];
+import React, { useState } from "react";
 
 function AdvisoryManagement() {
-  const [advisories, setAdvisories] = useState(mockAdvisories);
-  const [selected, setSelected] = useState(null);
-  const [filterCat, setFilterCat] = useState('All');
-  const [search, setSearch] = useState('');
+  const [advisories, setAdvisories] = useState([]);
+  const [form, setForm] = useState({ title: "", message: "", region: "", target: "All", validity: "" });
 
-  const filtered = advisories
-    .filter(a => filterCat === 'All' || a.category === filterCat)
-    .filter(a => a.title.toLowerCase().includes(search.toLowerCase()) || a.crop.toLowerCase().includes(search.toLowerCase()));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setAdvisories([...advisories, form]);
+    setForm({ title: "", message: "", region: "", target: "All", validity: "" });
+  };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto text-gray-800">
-      <h1 className="text-3xl font-bold mb-6">Advisory Management</h1>
+    <div className="p-6 text-gray-800">
+      <h1 className="text-3xl font-bold text-center mb-4">🔔 Advisory & Alert Management</h1>
+      <p className="text-center text-gray-600 mb-6">Send important advisories or alerts to farmers and vets.</p>
 
-      <div className="flex gap-4 mb-4">
-        <input
-          type="text"
-          placeholder="Search advisories or crops..."
-          value={search} onChange={e => setSearch(e.target.value)}
-          className="border rounded px-3 py-2 flex-grow focus:outline-none focus:ring focus:ring-green-200"
-        />
-        <select
-          value={filterCat} onChange={e => setFilterCat(e.target.value)}
-          className="border rounded px-3 py-2"
-        >
-          <option>All</option>
-          <option>Irrigation</option>
-          <option>Pest/Disease</option>
-          <option>Scheme</option>
-          <option>Post-Harvest</option>
-        </select>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={() => {
-            // placeholder to create new advisory
-            const newAd = { id: Date.now(), title: '', category: 'Irrigation', region: '', crop: '', date: new Date().toLocaleDateString(), content: '' };
-            setSelected(newAd);
-          }}
-        >
-          + New Advisory
-        </button>
-      </div>
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-md space-y-4 mb-8">
+        <input type="text" placeholder="Title" className="w-full border p-2 rounded" required
+          value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+        <textarea placeholder="Message content" className="w-full border p-2 rounded" rows="3" required
+          value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}></textarea>
+        <div className="grid md:grid-cols-3 gap-4">
+          <input type="text" placeholder="Region" className="border p-2 rounded" required
+            value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} />
+          <select className="border p-2 rounded" value={form.target}
+            onChange={(e) => setForm({ ...form, target: e.target.value })}>
+            <option>All</option>
+            <option>Farmer</option>
+            <option>Vet</option>
+          </select>
+          <input type="date" className="border p-2 rounded"
+            value={form.validity} onChange={(e) => setForm({ ...form, validity: e.target.value })} />
+        </div>
+        <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Send Advisory</button>
+      </form>
 
-      <div className="grid gap-4">
-        {filtered.map(a => (
-          <motion.div
-            key={a.id}
-            className="bg-white shadow rounded-xl p-4 cursor-pointer hover:shadow-lg transition"
-            onClick={() => setSelected(a)}
-            layout
-          >
-            <div className="flex justify-between items-center">
-              <h2 className="font-semibold">{a.title}</h2>
-              <span className="text-xs px-2 py-1 rounded bg-green-200 text-green-800">{a.category}</span>
-            </div>
-            <p className="text-gray-700 truncate mt-1">{a.content}</p>
-            <p className="text-xs text-gray-500 mt-2">{a.region}, {a.date}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      {selected && (
-        <motion.div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-2xl w-[600px] max-h-[80vh] overflow-auto shadow-xl">
-            <h2 className="text-xl font-bold mb-4">{selected.title || 'New Advisory'}</h2>
-            <div className="space-y-4">
-              {['Title','Category','Region','Crop','Date','Content'].map(field => (
-                <div key={field}>
-                  <label className="block font-semibold">{field}</label>
-                  {field === 'Content' ? (
-                    <textarea
-                      rows={4}
-                      className="w-full border rounded p-2"
-                      defaultValue={selected.content}
-                    />
-                  ) : (
-                    <input
-                      type="text"
-                      className="w-full border rounded p-2"
-                      defaultValue={selected[field.toLowerCase()]}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <button onClick={() => setSelected(null)} className="px-4 py-2 border rounded hover:bg-gray-100">Cancel</button>
-              <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Save Advisory</button>
-            </div>
+      <div>
+        <h2 className="font-semibold mb-3 text-lg">🧾 Sent Advisories</h2>
+        {advisories.length === 0 ? (
+          <p className="text-gray-500 italic">No advisories yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {advisories.map((adv, i) => (
+              <div key={i} className="p-4 bg-gray-50 rounded-lg shadow border">
+                <h3 className="font-bold">{adv.title}</h3>
+                <p>{adv.message}</p>
+                <p className="text-sm text-gray-600 mt-1">📍 {adv.region} | 🎯 {adv.target} | ⏳ Valid till {adv.validity}</p>
+              </div>
+            ))}
           </div>
-        </motion.div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
