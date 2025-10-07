@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Search, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import { Filter, AlertTriangle, Search } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// Fix default marker icons
+// Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -16,235 +16,249 @@ L.Icon.Default.mergeOptions({
 });
 
 const RiskMap = () => {
-  // Dummy data (10 farms/regions)
-  const riskData = [
+  // 🦠 Dummy Jeevya biosecurity data
+  const bioData = [
     {
       id: 1,
-      title: "High Pest Infestation in Punjab Wheat Fields",
-      content:
-        "Recent satellite data shows rising pest activity in northern Punjab. Regular crop monitoring and biopesticides are recommended.",
-      severity: "High",
-      region: "Punjab",
-      crop: "Wheat",
-      lat: 31.1471,
-      lng: 75.3412,
+      region: "Odisha",
+      risk: 0.85,
+      hazard: "Avian Influenza",
+      category: "Poultry",
+      lat: 20.9517,
+      lng: 85.0985,
+      detail:
+        "Detected unusual mortality in layer poultry units. Rapid Response Team deployed for containment.",
     },
     {
       id: 2,
-      title: "Drought Risk in Maharashtra Sugarcane Belt",
-      content:
-        "Low rainfall recorded for the past 3 weeks. Drip irrigation and mulching are advised for moisture retention.",
-      severity: "Medium",
-      region: "Maharashtra",
-      crop: "Sugarcane",
-      lat: 19.7515,
-      lng: 75.7139,
+      region: "Bihar",
+      risk: 0.6,
+      hazard: "FMD Outbreak",
+      category: "Cattle",
+      lat: 25.0961,
+      lng: 85.3131,
+      detail:
+        "Reports of foot-and-mouth disease. Vaccination drive ongoing in nearby villages.",
     },
     {
       id: 3,
-      title: "Heavy Rainfall Alert for Eastern UP Paddy Fields",
-      content:
-        "IMD predicts heavy rain this week. Ensure proper field drainage to prevent crop damage.",
-      severity: "High",
-      region: "Uttar Pradesh",
-      crop: "Paddy",
-      lat: 26.8467,
-      lng: 80.9462,
+      region: "Kerala",
+      risk: 0.45,
+      hazard: "Water Contamination",
+      category: "Sanitation",
+      lat: 10.8505,
+      lng: 76.2711,
+      detail:
+        "Wastewater from dairy units contaminating nearby streams. Disinfection and testing ongoing.",
     },
     {
       id: 4,
-      title: "Heatwave Stress in Rajasthan Cotton Crops",
-      content:
-        "Temperatures above 42°C are stressing cotton crops. Spray micronutrients and schedule irrigation wisely.",
-      severity: "Medium",
-      region: "Rajasthan",
-      crop: "Cotton",
-      lat: 27.0238,
-      lng: 74.2179,
+      region: "Punjab",
+      risk: 0.78,
+      hazard: "Swine Fever",
+      category: "Pig Farms",
+      lat: 31.1471,
+      lng: 75.3412,
+      detail:
+        "ASF confirmed in 2 districts. Biosecurity lockdown enforced in affected zones.",
     },
     {
       id: 5,
-      title: "Fungal Disease Risk in Assam Tea Plantations",
-      content:
-        "High humidity increases fungal risk. Apply preventive fungicides and prune infected leaves.",
-      severity: "Medium",
       region: "Assam",
-      crop: "Tea",
+      risk: 0.92,
+      hazard: "Zoonotic Disease Risk",
+      category: "Cross-species",
       lat: 26.2006,
       lng: 92.9376,
-    },
-    {
-      id: 6,
-      title: "Soil Erosion in Kerala Hilly Farms",
-      content:
-        "Continuous rains are causing erosion. Use contour bunding and plant cover crops.",
-      severity: "Low",
-      region: "Kerala",
-      crop: "Mixed",
-      lat: 10.8505,
-      lng: 76.2711,
-    },
-    {
-      id: 7,
-      title: "Flood Threat in Bihar Maize Fields",
-      content:
-        "Overflowing rivers could submerge maize fields. Drain excess water immediately.",
-      severity: "High",
-      region: "Bihar",
-      crop: "Maize",
-      lat: 25.0961,
-      lng: 85.3131,
-    },
-    {
-      id: 8,
-      title: "Low NDVI in MP Soybean Belt",
-      content:
-        "NDVI values show declining crop health due to nitrogen deficiency. Conduct soil testing and fertilize accordingly.",
-      severity: "Medium",
-      region: "Madhya Pradesh",
-      crop: "Soybean",
-      lat: 22.9734,
-      lng: 78.6569,
-    },
-    {
-      id: 9,
-      title: "Cold Wave in Himachal Apple Orchards",
-      content:
-        "Sudden temperature drop may harm apple blossoms. Use smoke smudging for protection.",
-      severity: "High",
-      region: "Himachal Pradesh",
-      crop: "Apple",
-      lat: 31.1048,
-      lng: 77.1734,
-    },
-    {
-      id: 10,
-      title: "Locust Movement Risk in Western India",
-      content:
-        "Satellite data shows potential locust migration. Stay alert and inform authorities.",
-      severity: "Medium",
-      region: "Western India",
-      crop: "Various",
-      lat: 23.0225,
-      lng: 72.5714,
+      detail:
+        "Wild boar migration near pig farms raises zoonotic risk. Barrier fencing advised.",
     },
   ];
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [expandedId, setExpandedId] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filterRisk, setFilterRisk] = useState("All");
+  const [filterType, setFilterType] = useState("All");
 
-  const filteredData = riskData.filter(
-    (item) =>
-      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.region.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.crop.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const severityColors = {
-    High: "bg-red-100 text-red-700",
-    Medium: "bg-yellow-100 text-yellow-700",
-    Low: "bg-green-100 text-green-700",
+  // Utility Functions
+  const getColor = (risk) => {
+    if (risk > 0.8) return "rgba(239, 68, 68, 0.9)"; // red
+    if (risk > 0.5) return "rgba(234, 179, 8, 0.9)"; // yellow
+    return "rgba(34, 197, 94, 0.9)"; // green
   };
 
+  const getRadius = (risk) => 25 + risk * 25;
+
+  // Filtering Logic
+  const filteredData = bioData.filter((d) => {
+    const matchesSearch =
+      d.region.toLowerCase().includes(search.toLowerCase()) ||
+      d.hazard.toLowerCase().includes(search.toLowerCase());
+    const matchesRisk =
+      filterRisk === "All" ||
+      (filterRisk === "High" && d.risk > 0.7) ||
+      (filterRisk === "Medium" && d.risk > 0.4 && d.risk <= 0.7) ||
+      (filterRisk === "Low" && d.risk <= 0.4);
+    const matchesType =
+      filterType === "All" || d.category === filterType;
+    return matchesSearch && matchesRisk && matchesType;
+  });
+
   return (
-    <div className="min-h-screen bg-white text-gray-800 px-6 py-10">
-      <div className="max-w-7xl mx-auto bg-white rounded-2xl p-6">
+    <div className="flex flex-col md:flex-row min-h-[calc(100vh-4rem)] bg-gray-50 font-poppins">
+      {/* Sidebar (Left Section) */}
+      <div className="md:w-[40%] w-full bg-white border-r border-gray-200 px-6 py-6 overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-center mb-6">
-          <AlertTriangle className="w-7 h-7 text-red-500 mr-2" />
-          <h1 className="text-3xl font-bold text-gray-900">
-            🗺 Regional Biosecurity Risk Map
+        <div className="flex items-center mb-6">
+          <AlertTriangle className="w-6 h-6 text-red-500 mr-2" />
+          <h1 className="text-2xl font-bold text-gray-900">
+            Jeevya Biosecurity RiskMap
           </h1>
         </div>
 
-        {/* Search bar */}
-        <div className="flex items-center mb-6 bg-gray-100 rounded-xl px-4 py-2 shadow-sm">
-          <Search className="w-5 h-5 text-gray-500 mr-2" />
-          <input
-            type="text"
-            placeholder="Search by crop, region, or risk..."
-            className="w-full bg-transparent outline-none text-gray-700"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        {/* Filters */}
+        <div className="bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
+          <div className="flex items-center mb-3">
+            <Filter className="text-green-700 mr-2" />
+            <h2 className="font-semibold text-gray-800 text-lg">Filter Risks</h2>
+          </div>
+
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Risk Level
+              </label>
+              <select
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-green-400"
+                value={filterRisk}
+                onChange={(e) => setFilterRisk(e.target.value)}
+              >
+                <option value="All">All</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+              </label>
+              <select
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-green-400"
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+              >
+                <option value="All">All</option>
+                <option value="Poultry">Poultry</option>
+                <option value="Cattle">Cattle</option>
+                <option value="Pig Farms">Pig Farms</option>
+                <option value="Sanitation">Sanitation</option>
+                <option value="Cross-species">Cross-species</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Search Region / Hazard
+              </label>
+              <div className="flex items-center border border-gray-300 rounded-md px-3 py-2">
+                <Search className="w-4 h-4 text-gray-500 mr-2" />
+                <input
+                  type="text"
+                  placeholder="Type to search..."
+                  className="w-full bg-transparent outline-none text-sm text-gray-700"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Interactive Map */}
-        <div className="h-80 w-full rounded-xl overflow-hidden shadow-md mb-8">
+        {/* Risk Summary Cards */}
+        <div className="space-y-4">
+          {filteredData.length > 0 ? (
+            filteredData.map((item) => (
+              <div
+                key={item.id}
+                className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all"
+              >
+                <div className="flex justify-between items-center mb-1">
+                  <h3 className="font-semibold text-gray-900">{item.hazard}</h3>
+                  <span
+                    className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                      item.risk > 0.8
+                        ? "bg-red-100 text-red-700"
+                        : item.risk > 0.5
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {(item.risk * 100).toFixed(0)}%
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600">{item.region}</p>
+                <p className="text-xs text-gray-500 mt-1">{item.detail}</p>
+                <p className="text-xs text-gray-400 mt-2">
+                  Category: {item.category}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500 mt-4 italic">
+              No matching data found.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Map (Right Section) */}
+      <div className="md:w-[60%] w-full relative bg-gray-100">
+        <div className="absolute top-0 left-0 right-0 bottom-0">
           <MapContainer
-            center={[22.9734, 78.6569]} // India center
+            center={[22.9734, 78.6569]}
             zoom={5}
-            scrollWheelZoom={true}
+            scrollWheelZoom
             className="h-full w-full"
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {filteredData.map((farm) => (
-              <Marker key={farm.id} position={[farm.lat, farm.lng]}>
+            {filteredData.map((loc) => (
+              <CircleMarker
+                key={loc.id}
+                center={[loc.lat, loc.lng]}
+                radius={getRadius(loc.risk)}
+                pathOptions={{
+                  color: getColor(loc.risk),
+                  fillColor: getColor(loc.risk),
+                  fillOpacity: 0.4,
+                }}
+              >
                 <Popup>
-                  <strong>{farm.region}</strong> — {farm.severity} Risk
-                  <br />
-                  <em>{farm.crop}</em>
+                  <div className="font-semibold text-gray-900">{loc.hazard}</div>
+                  <p className="text-sm text-gray-700">
+                    Risk: {(loc.risk * 100).toFixed(0)}%
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">{loc.detail}</p>
                 </Popup>
-              </Marker>
+              </CircleMarker>
             ))}
           </MapContainer>
         </div>
 
-        {/* Risk List */}
-        <div className="space-y-4">
-          {filteredData.length > 0 ? (
-            filteredData.map((item) => (
-              <div
-                key={item.id}
-                className="border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition bg-white"
-              >
-                <div
-                  className="flex justify-between items-center cursor-pointer"
-                  onClick={() =>
-                    setExpandedId(expandedId === item.id ? null : item.id)
-                  }
-                >
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      {item.title}
-                    </h2>
-                    <div className="flex items-center gap-3 mt-1 flex-wrap">
-                      <span className="text-sm text-gray-500">
-                        Region: {item.region}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        Crop: {item.crop}
-                      </span>
-                      <span
-                        className={`text-xs font-medium px-2 py-1 rounded-md ${severityColors[item.severity]}`}
-                      >
-                        {item.severity} Risk
-                      </span>
-                    </div>
-                  </div>
-                  {expandedId === item.id ? (
-                    <ChevronUp className="w-5 h-5 text-gray-600" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-600" />
-                  )}
-                </div>
-
-                {expandedId === item.id && (
-                  <p className="mt-3 text-gray-700 leading-relaxed">
-                    {item.content}
-                  </p>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500 py-10">
-              No matching risks found.
-            </p>
-          )}
+        {/* Legend */}
+        <div className="absolute bottom-6 right-6 bg-white/90 rounded-lg shadow-md p-3 border border-gray-200 text-sm">
+          <h4 className="font-semibold text-gray-800 mb-1">🧭 Risk Intensity</h4>
+          <div className="flex items-center space-x-2">
+            <span className="w-4 h-4 bg-green-500 rounded"></span>
+            <span>Low</span>
+            <span className="w-4 h-4 bg-yellow-400 rounded"></span>
+            <span>Medium</span>
+            <span className="w-4 h-4 bg-red-500 rounded"></span>
+            <span>High</span>
+          </div>
         </div>
       </div>
     </div>
